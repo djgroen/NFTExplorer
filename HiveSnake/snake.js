@@ -81,8 +81,8 @@ function restart() {
          x : 9 * box,
          y: 10 * box
      }
-    getHead();
     getFood();
+    getHead();
     d = null;
     game = setInterval(draw, 100);
 }
