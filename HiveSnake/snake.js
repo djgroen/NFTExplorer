@@ -22,13 +22,29 @@ snake [0] = {
 
 // food
 
-let food = {
-    x: Math.floor(Math.random() * 17 + 1) * box,
-    y : Math.floor(Math.random() * 15 + 3) * box
+let food = {x: 0,y : 0}
+
+function getFood() {
+    food = {
+        x: Math.floor(Math.random() * 17 + 1) * box,
+        y : Math.floor(Math.random() * 15 + 3) * box
+    }
 }
 
+getFood();
+
 // sun
-let sunHead = [{x: Math.floor(Math.random() * 17 + 1) * box, y: Math.floor(Math.random() * 15 + 3) * box}];
+
+let sunHead = [{x: 0,y: 0}];
+
+function getHead() {
+     sunHead = [{x: Math.floor(Math.random() * 17 + 1) * box, y: Math.floor(Math.random() * 15 + 3) * box}];
+    if (sunHead[0].x == food.x && sunHead[0].y == food.y) {
+        getHead();
+       }
+}
+
+getHead();
 
 // score
 
@@ -65,7 +81,8 @@ function restart() {
          x : 9 * box,
          y: 10 * box
      }
-    sunHead = [{x: Math.floor(Math.random() * 17 + 1) * box, y: Math.floor(Math.random() * 15 + 3) * box}];
+    getHead();
+    getFood();
     d = null;
     game = setInterval(draw, 100);
 }
@@ -177,10 +194,7 @@ function draw() {
     
     if(snakeX == food.x && snakeY == food.y) {
         score++;
-        food = {
-            x: Math.floor(Math.random() * 17 + 1) * box,
-            y : Math.floor(Math.random() * 15 + 3) * box
-        }
+        getFood();
     }
     else {
         // remove tail
