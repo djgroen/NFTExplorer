@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="global.css">
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js"></script>
+	<script src=https://cdn.jsdelivr.net/npm/@hivechain/hivejs/dist/hivejs.min.js></script>
+    <script src=hive_keychain.js></script>
+    <script type="text/javascript" src="showNFT.js"></script>    
+</head>
+    
+<body>
+	<body id = "body">   
+      <div> 
+    <h1 style = "color:green;" >   
+        Manage Hive Engine NFTs   
+    </h1> 
+      
+    <p id = "header" style =  
+        "font-size: 15px; font-weight: bold;"> 
+        Click on the button to create a table from the JSON data.<br><br> 
+        Show    </p>
+          
+          <select id="game">
+            <option value="STAR">Rising Star</option>
+            <option value="CITY">DCity</option>  
+            <option value="API">DCity API (not working for now)</option>  
+            <option value="CRITTER">Crypto Critters</option>
+          </select>
+          
+          <p id = "topText" style =  
+        "font-size: 15px; font-weight: bold;"> 
+              NFTs for account: @ </p>
+    
+	
+	<input type="text" id="userInput" name="userInput">
+      
+	 <button class = "mainButton" onclick = "loadDataButton()"> 
+        Set Account
+    </button> 
+	
+    <button class = "mainButton" onclick = "buildButtonClicked();"> 
+        Show NFTs 
+    </button> 
+	  
+    <br><br> 
+     </div>   
+    <div id = "tablediv">
+        <input type="text" id="searchField" style = "visibility: hidden">  
+        <p id ="dataTable"> </p>
+    </div>
+      
+      
+    
+</body>
+</html>
+
+

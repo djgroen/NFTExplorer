@@ -1,4 +1,4 @@
-#mainButton {
+.mainButton {
   background-color: #E31337;
   border: none;
   color: white;
@@ -9,7 +9,7 @@
   font-size: 16px;
 }
 
-#inputParam {
+#userInput, #searchField {
   border: 2px solid #E31337;
   border-radius: 4px;
 }
@@ -17,6 +17,11 @@
 #dataTable {
     text-align:center;
     margin: auto;
+}
+
+#game {
+  border: 2px solid #E31337;
+  border-radius: 4px;
 }
 
 body {
