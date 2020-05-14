@@ -157,7 +157,9 @@ function broadcastSendTX() {
                 transaction.contractPayload.nfts[0].symbol = currentTable;
                 transaction.contractPayload.nfts[0].ids = [];
                 transaction.contractPayload.nfts[0].ids.push(document.querySelector("#broadcastTXButton").value);
-                hive_keychain.requestCustomJson(document.querySelector('#usernameInput'), "ssc-mainnet-hive", "Active", JSON.stringify(transaction), "Send " + currentTable + " NFT with ID " + document.querySelector("#broadcastTXButton").value + " to: " + input, function(response) {
+               
+                message = "Send " + currentTable + " NFT with ID " + document.querySelector("#broadcastTXButton").value + " to: " + input;
+                hive_keychain.requestCustomJson(document.querySelector('#usernameInput').value, "ssc-mainnet-hive", "Active", JSON.stringify(transaction), message, function(response) {
 	               console.log(response);
                 });
             }
