@@ -51,6 +51,12 @@ th {
   background-color: #e7e7f1;
 }
 
+#navigationBar {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
 /* The Modal (background) */
 .modal {
   display: none; /* Hidden by default */
@@ -87,4 +93,21 @@ th {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+#sendToLabel {
+    font-weight: bold;
+}
+
+a:link, a:visited {
+  background-color: #E31337;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover, a:active {
+  background-color: #E31337;
 }

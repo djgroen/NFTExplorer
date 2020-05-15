@@ -1,7 +1,8 @@
 let ssc = new SSC('https://api.hive-engine.com/rpc');  
 
-var JsonGlobal = [] 
+var APIDataJson = [] 
 var getData = function(contract, table, account) {
+                clearTableData();
                 currentTable = table;
                 return new Promise(function(resolve, reject) {
                var JSONdata = [];
@@ -103,20 +104,33 @@ function buildTable(dataInJson) {
             
         } // end create table function
         
-function buildButtonClicked() { 
-            getJson();
+async function buildButtonClicked() { 
+            // get and set data
+            await getData('nft', document.getElementById("game").value, document.getElementById("usernameInput").value).then( result => APIDataJson = result );
+            // update account name
             var textHeader = document.getElementById("topText"); 
 			textHeader.innerText = "NFTs for account: @" + document.getElementById("usernameInput").value
-            setTimeout(() => {  buildTable(JsonGlobal);}, 150); 
+            // build table
+            setTimeout(() => {  buildTable(APIDataJson);}, 150); 
             
         }
+function buildTableWithData(result) {
+    buildTable(APIDataJson);
+    let headerRow = document.querySelector('#jsonDataTable').rows[0];
+    if (headerRow.cells.length > 1) {  
+        console.log('Table built!')
+        }
+    else {
+        buildTableWithData(result);
+    }
+}
 
 async function getJson() {
-            await getData('nft', document.getElementById("game").value, document.getElementById("usernameInput").value).then( result => JsonGlobal = result);
+          await getData('nft', document.getElementById("game").value, document.getElementById("usernameInput").value).then( result => APIDataJson = result);  
          }
         
-function clearTable() {
-            JSONdata = [];
+function clearTableData() {
+            APIDataJson = [];
         }
         
         // Opens the pop up
@@ -133,6 +147,8 @@ function sendNFT(buttonData) {
             window.onclick = function(event) {
             if (event.target == modal) {
                  modal.style.display = "none";
+                 document.querySelector('#sendToLabel').innerText = "Send to:";
+                 document.querySelector('#succesIndicator').innerText = "";
                 }
             }
             // end pop up
@@ -160,7 +176,14 @@ function broadcastSendTX() {
                
                 message = "Send " + currentTable + " NFT with ID " + document.querySelector("#broadcastTXButton").value + " to: " + input;
                 hive_keychain.requestCustomJson(document.querySelector('#usernameInput').value, "ssc-mainnet-hive", "Active", JSON.stringify(transaction), message, function(response) {
-	               console.log(response);
+	               if (response.success) {
+                        console.log(response);
+                        document.querySelector('#sendToLabel').innerText = "Sent to:";
+                        document.querySelector('#succesIndicator').innerText = "Transaction successfully broadcasted!";
+                       }
+                    else {
+                        alert('Transaction failed, please try again!');
+                    }
                 });
             }
         }
