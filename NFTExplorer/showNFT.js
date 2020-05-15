@@ -120,7 +120,6 @@ function buildTableWithData(result) {
 		return;
         }
     else {
-		document.getElementById("dataTable").innerText = "Loading. Please wait.";
         setTimeout(() => {  buildTableWithData(APIDataJson);}, 50);
     }
 }
