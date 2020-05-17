@@ -2,7 +2,6 @@ let ssc = new SSC('https://api.hive-engine.com/rpc');
 
 var APIDataJson = [] 
 var getData = function(contract, table, account) {
-                clearTableData();
                 currentTable = table;
                 return new Promise(function(resolve, reject) {
                var JSONdata = [];
@@ -47,8 +46,7 @@ function buildTable(dataInJson) {
             
              // CREATE DYNAMIC TABLE.
             var table = document.createElement("table");
-            table.setAttribute("id", "jsonDataTable");
-            
+            table.setAttribute("id", "jsonDataTable");          
               // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
             
             var tr = table.insertRow(-1);    
@@ -96,32 +94,33 @@ function buildTable(dataInJson) {
             searchField.placeholder="Search wallet..."
             searchField.addEventListener('keyup', filterTable, false);
             }
-            
+    
             // ADD TABLE TO DOC
             document.getElementById("dataTable").innerHTML = "";
-            document.getElementById("dataTable").appendChild(table);;
-            
-            
+            document.getElementById("dataTable").appendChild(table);
+
         } // end create table function
         
 async function buildButtonClicked() { 
             // get and set data
+			clearTableData();
             await getData('nft', document.getElementById("game").value, document.getElementById("usernameInput").value).then( result => APIDataJson = result );
             // update account name
             var textHeader = document.getElementById("topText"); 
 			textHeader.innerText = "NFTs for account: @" + document.getElementById("usernameInput").value
             // build table
-            setTimeout(() => {  buildTable(APIDataJson);}, 150); 
+            setTimeout(() => {  buildTableWithData(APIDataJson);}, 150); 
             
         }
+		
 function buildTableWithData(result) {
     buildTable(APIDataJson);
     let headerRow = document.querySelector('#jsonDataTable').rows[0];
     if (headerRow.cells.length > 1) {  
-        console.log('Table built!')
+		return;
         }
     else {
-        buildTableWithData(result);
+        setTimeout(() => {  buildTableWithData(APIDataJson);}, 50);
     }
 }
 
