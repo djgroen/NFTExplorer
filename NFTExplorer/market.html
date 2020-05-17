@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title> Manage Hive-Engine NFTs </title>
+        <link rel="icon" href="images/favicon.ico">
+        <link rel="stylesheet" type="text/css" href="global.css">
+        <script src="https://code.jquery.com/jquery-latest.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script type="text/javascript" src="market.js"></script> 
+    </head>
+    <body id = "body">
+        <div id = "loginArea" >
+            <div id = "loginAreaFrame"> 
+                <input type="text" class = "inputField" id="loginAccountName"> 
+                <button placeholder="Account name" id ="loginButton" class = "mainButton" onclick="login()"> 
+                    Login
+                </button>    
+            </div>
+        </div>
+        <div id = "navigation"> 
+            <h1 style = "color:green;" >   
+                Manage Hive Engine NFTs   
+            </h1> 
+          
+            <ul style = "list-style-type: none; margin: 0; padding: -10; overflow: hidden; padding: 5px">
+                <li style = "display: inline"><a href="home.html">Wallet</a></li>
+                <li style = "display: inline"><a href="market.html">Market</a></li>
+                <li style = "display: inline"><a href="">Market Stream</a></li>
+            </ul>
+        
+            <p style = "font-size: 15px"> This is still in heavy testing phase, if you find any bug please report them to me on Discord okean123#2974 </p>
+        </div>   
+        <div id = "" style = "display: inline">
+            <p>Choose market:</p>
+            <select id="game">
+                <option value="STAR">Rising Star</option>
+                <option value="CITY">DCity</option>  
+            </select>
+            <button class = "mainButton" onclick = "loadMarket();"> 
+                Load Market
+            </button>
+            <br><br> 
+        </div>
+        <div id = "tableArea">
+            <input type="text" class = "inputField" id="searchField" style = "visibility: hidden">  
+            <p id ="marketTable"> </p>
+        </div>        
+    </body>
+</html>

@@ -56,11 +56,11 @@ function buildTable(dataInJson) {
             for (var i = 0; i < col.length + 1; i++) {
                 var th = document.createElement("th");      // TABLE HEADER.
                 if (i < col.length) {
-                    th.innerHTML = col[i];
+                    th.innerText = col[i];
                     tr.appendChild(th);
                 }
                 else {
-                    th.innerText = "Manage";
+                    th.innerText = "Options";
                     tr.appendChild(th);
                 }
                 
@@ -93,7 +93,7 @@ function buildTable(dataInJson) {
                 }
             let searchField = document.querySelector('#searchField');
             searchField.style.visibility = "visible";
-            searchField.placeholder="Search table..."
+            searchField.placeholder="Search wallet..."
             searchField.addEventListener('keyup', filterTable, false);
             }
             
@@ -138,7 +138,7 @@ function sendNFT(buttonData) {
             buttonData = JSON.parse(buttonData);
             document.querySelector("#broadcastTXButton").value = buttonData._id;
             // Opening the pop up
-            var modal = document.querySelector("#myModal");
+            var modal = document.querySelector("#transferPopUp");
             var span = document.querySelector(".close");
             modal.style.display = "block";
             span.onclick = function() {

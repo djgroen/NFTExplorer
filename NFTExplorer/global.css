@@ -14,7 +14,7 @@
     border-radius: 4px;
 }
 
-#dataTable {
+#dataTable, #marketTable {
     text-align:center;
     margin: auto;
 }
@@ -24,7 +24,7 @@
   border-radius: 4px;
 }
 
-body {
+body:not(loginArea) {
   text-align:center;
 }
 
@@ -51,14 +51,13 @@ th {
   background-color: #e7e7f1;
 }
 
-#navigationBar {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+th:hover {
+    background-color: #666666;
+    cursor: default;
 }
 
-/* The Modal (background) */
-.modal {
+/* The popUpClass (background) */
+.popUpClass {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -71,8 +70,8 @@ th {
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-/* Modal Content/Box */
-.modal-content {
+/* popUpClass Content/Box */
+.popUpClass-content {
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
@@ -111,3 +110,30 @@ a:link, a:visited {
 a:hover, a:active {
   background-color: #E31337;
 }
+/* end */
+
+.buy-btn:disabled {
+    background-color: grey;
+    border-color: navy;
+}
+
+#loginArea {
+    position: absolute;
+    top: 2vh;
+    right: 2vw;
+}
+
+#loginAreaFrame {
+	margin: auto;
+    padding: 6px;
+	height: 100%;
+	width: 100%;
+	box-sizing: content-box;
+	box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.5);
+}
+
+#loginButton {
+    border-radius: 5%;
+}
+
+    

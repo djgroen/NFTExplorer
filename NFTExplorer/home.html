@@ -3,6 +3,7 @@
 <head>
 	<meta charset="utf-8"/>
 	<title> Manage Hive-Engine NFTs </title>
+    <link rel="icon" href="images/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="global.css">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js"></script>
@@ -10,14 +11,14 @@
     <script type="text/javascript" src="showNFT.js"></script> 
 </head>
 	<body id = "body">   
-      <div> 
+      <div id = "navigation"> 
     <h1 style = "color:green;" >   
         Manage Hive Engine NFTs   
     </h1> 
           
     <ul style = "list-style-type: none; margin: 0; padding: -10; overflow: hidden; padding: 5px">
-         <li style = "display: inline"><a href="home.html">Home</a></li>
-         <li style = "display: inline"><a href="">Market</a></li>
+         <li style = "display: inline"><a href="home.html">Wallet</a></li>
+         <li style = "display: inline"><a href="market.html">Market</a></li>
          <li style = "display: inline"><a href="">Market Stream</a></li>
     </ul>
         
@@ -48,10 +49,10 @@
         <p id ="dataTable"> </p>
     </div>
         
-<div id="myModal" class="modal">
+<div id="transferPopUp" class="popUpClass">
 
-  <!-- Modal content -->
-  <div class="modal-content">
+  <!-- popUpClass content -->
+  <div class="popUpClass-content">
     <label id = "succesIndicator"></label>
     <span class="close">&times;</span>
     <label id = "sendToLabel" for="toAccount">Send to: </label>
