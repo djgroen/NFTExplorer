@@ -116,7 +116,7 @@ function buildTable(marketData) {
         tr.appendChild(th);   
     }
     var th = document.createElement("th");
-    th.innerText = "Manage";
+    th.innerText = "Options";
     tr.appendChild(th);
     
     // ADD JSON DATA TO THE TABLE AS ROWS.

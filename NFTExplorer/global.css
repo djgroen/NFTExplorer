@@ -98,7 +98,7 @@ th:hover {
     font-weight: bold;
 }
 
-a:link, a:visited {
+.aButton:link, .aButton:visited {
   background-color: #E31337;
   color: white;
   padding: 14px 25px;
@@ -107,7 +107,11 @@ a:link, a:visited {
   display: inline-block;
 }
 
-a:hover, a:active {
+a:link, a:visited {
+    color: #E31337;
+}
+
+.aButton:hover, .aButton:active {
   background-color: #E31337;
 }
 /* end */
