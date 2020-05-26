@@ -7,7 +7,7 @@
         <link rel="stylesheet" type="text/css" href="global.css">
         <script src="https://code.jquery.com/jquery-latest.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script type="text/javascript" src="marketStream.js"></script> 
+        <script type="text/javascript" src="lookup.js"></script> 
     </head>
     <body id = "body">
         <div id = "navigation"> 
@@ -22,18 +22,8 @@
             </ul>
             
             <p style = "font-size: 15px"> This is still in heavy testing phase, if you find any bug please report them to me on Discord okean123#2974 </p>
-            
-            <br>
-            
-            <p> Show last 24 hours of market actions for: </p>
-            
-            <select id="game">
-                <option value="STAR">Rising Star</option>
-                <option value="CITY">DCity</option>  
-            </select>
-            <button class = "mainButton" onclick="loadStream()" > Load</button> 
         </div>
-        
-        <div id = "transactions" style = "width: 90%"> </div>
+            
+         <div id = "cardData"> </div>
     </body>
 </html>
