@@ -18,7 +18,7 @@ var nft = {};
 var getData = function(table, id) {
     table = table + "instances";
     return new Promise(function(resolve, reject) {  
-        ssc.findOne('nft','STARinstances',{_id: parseInt(id)}, (err, result) => {          
+        ssc.findOne('nft',table,{_id: parseInt(id)}, (err, result) => {          
             if (result) {
                 resolve(result);
             } else {
