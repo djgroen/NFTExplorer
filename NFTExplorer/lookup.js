@@ -33,10 +33,21 @@ async function findNFT() {
     var id = search_params.get('id');
     await getData(table, id).then(function(result) { 
         nft = result;
-        $("#cardData").append("<p> Card ID: " + nft._id + "</p>");
-        $("#cardData").append("<p> Owner: " + nft.account + "</p>");
-        $("#cardData").append("<p> Class: " + nft.properties.class + "</p>");
-        $("#cardData").append("<p> Type: " + nft.properties.type + "</p>");
+        switch(table) {
+            case 'STAR':
+                $("#cardData").append("<p> Card ID: " + nft._id + "</p>");
+                $("#cardData").append("<p> Owner: " + nft.account + "</p>");
+                $("#cardData").append("<p> Class: " + nft.properties.class + "</p>");
+                $("#cardData").append("<p> Type: " + nft.properties.type + "</p>");
+                break;
+            case 'CITY': 
+                $("#cardData").append("<p> Card ID: " + nft._id + "</p>");
+                $("#cardData").append("<p> Owner: " + nft.account + "</p>");
+                $("#cardData").append("<p> Name: " + nft.properties.name + "</p>");
+                $("#cardData").append("<p> Type: " + nft.properties.type + "</p>");
+                break;            
+               }
+        console.log("Test");
     });
     
     
