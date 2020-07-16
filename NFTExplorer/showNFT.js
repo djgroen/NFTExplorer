@@ -1,12 +1,40 @@
-let ssc = new SSC('https://api.hive-engine.com/rpc');  
+var ssc;
+
+$.when(
+    $.getScript( "https://cdn.jsdelivr.net/npm/@hivechain/hivejs/dist/hivejs.min.js" ),
+    $.getScript( "https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js" ),
+    $.Deferred(function( deferred ){
+        $( deferred.resolve );
+    })
+).done(function(){
+    ssc = new SSC('https://api.hive-engine.com/rpc');  
+});
 
 var APIDataJson = [] 
-var getData = function(contract, table, account) {
-                currentTable = table;
-                return new Promise(function(resolve, reject) {
-               var JSONdata = [];
-                table = table + "instances";
-               ssc.find(contract, table, {account: account}, 1000, 0, [], (err, result) => {
+var currentTable = "";
+
+var getRawData = function(contract, table, offSet) {
+	currentTable = table;
+    table = table + "instances";
+    let account = document.getElementById("usernameInput").value;
+    return new Promise(function(resolve, reject) {  
+        ssc.find(contract, table, {account: account}, 1000, offSet, [], (err, result) => {          
+            if (result) {
+                APIDataJson = result;
+                resolve(result);
+            } else {
+                reject(Error("Failed to get JSON data!")); 
+            }
+        });
+    });
+} 
+
+
+
+
+var getData = function(result) {         
+                var JSONdata = [];
+                table = currentTable + "instances";
 				for (i = 0; i < result.length; i++) {
                     // Show previous owner with modified text if it's bought or has no previous owner
                     switch(result[i].previousAccount) {
@@ -26,15 +54,7 @@ var getData = function(contract, table, account) {
                         // case 'APIinstances': JSONdata[i] = JSON.parse(JSON.stringify( JSONdata[i].properties, ["x", "info"])); break;
                            }						
 				}
-			});
-            JSONdataBackup = JSONdata;     
-                    
-            if (JSONdata != null) {
-                    resolve(JSONdata);
-            } else {
-                    reject(Error("Failed to get JSON data!"));
-                }
-        });
+				return JSONdata;
             }
 		
             
@@ -133,26 +153,15 @@ function buildTable(dataInJson) {
         
 async function buildButtonClicked() { 
             resetUI();
-            // get and set data
-            await getData('nft', document.getElementById("game").value, document.getElementById("usernameInput").value).then( result => APIDataJson = result );
+            // get data and build table
+            await getRawData('nft', document.getElementById("game").value, 0).then( function(result) {
+                buildTable(getData(result));
+			});    
             // update account name
             var textHeader = document.getElementById("topText"); 
-			textHeader.innerText = "NFTs for account: @" + document.getElementById("usernameInput").value
-            // build table
-            setTimeout(() => {  buildTableWithData(APIDataJson);}, 150); 
-            
+			textHeader.innerText = "NFTs for account: @" + document.getElementById("usernameInput").value     
         }
 		
-function buildTableWithData(result) {
-    buildTable(APIDataJson);
-    let headerRow = document.querySelector('#jsonDataTable').rows[0];
-    if (headerRow.cells.length > 1) {  
-		return;
-        }
-    else {
-        setTimeout(() => {  buildTableWithData(APIDataJson);}, 50);
-    }
-}
 
 async function getJson() {
           await getData('nft', document.getElementById("game").value, document.getElementById("usernameInput").value).then( result => APIDataJson = result);  
