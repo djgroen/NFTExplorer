@@ -6,8 +6,9 @@
     <link rel="icon" href="images/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="global.css">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@hivechain/hivejs/dist/hivejs.min.js"></script>
+	<script src="hive.min.js"></script>
     <script type="text/javascript" src="showNFT.js"></script> 
 </head>
 	<body id = "body">   
@@ -43,10 +44,17 @@
     </button> 
 	  
     <br><br> 
-     </div>   
-    <div id = "tablediv">
+     </div>
+
+    <div id = "tablediv">    
         <input type="text" class = "inputField" id="searchField" style = "visibility: hidden">  
         <p id ="dataTable"> </p>
+        <br> <br>
+        <div class="sticky">
+             <button class = "mainButton" id = "sendMultipleButton" onclick = "multipleSendButton()" style = "visibility: hidden"> 
+                Transfer selected
+            </button> 
+    </div>
     </div>
         
 <div id="transferPopUp" class="popUpClass">
@@ -57,9 +65,10 @@
     <span class="close">&times;</span>
     <label id = "sendToLabel" for="toAccount">Send to: </label>
     <input class = "inputField" id = "toAccountInput" type="text" placeholder=" account name" name="toAccount" required>
-    <button class = "mainButton" id = "broadcastTXButton" onClick = "broadcastSendTX()"> Send NFT</button>
+    <button class = "mainButton" id = "broadcastTXButton"> Send NFT(s)</button>
   </div>
     
+</div>   
 </body>
 </html>
 

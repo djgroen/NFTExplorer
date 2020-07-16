@@ -151,4 +151,15 @@ a:link, a:visited {
     font-size: small;
     color: #212529;
 }
-    
+
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
+
+div.sticky {
+  position: sticky;
+  bottom: 0;
+  padding-bottom: 10px;
+}
