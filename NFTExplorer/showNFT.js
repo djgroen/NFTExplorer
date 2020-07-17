@@ -3,8 +3,8 @@ var ssc;
 $.when(
     $.getScript( "https://cdn.jsdelivr.net/npm/@hivechain/hivejs/dist/hivejs.min.js" ),
     $.getScript( "https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js" ),
-    $.getScript( "/tableManager.js" ),
-    $.getScript( "/dialogs.js" ),
+    $.getScript( "./tableManager.js" ),
+    $.getScript( "./dialogs.js" ),
     $.Deferred(function( deferred ){
         $( deferred.resolve );
     })
