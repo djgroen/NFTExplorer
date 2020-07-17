@@ -3,6 +3,8 @@ var ssc;
 $.when(
     $.getScript( "https://cdn.jsdelivr.net/npm/@hivechain/hivejs/dist/hivejs.min.js" ),
     $.getScript( "https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js" ),
+    $.getScript( "/tableManager.js" ),
+    $.getScript( "/dialogs.js" ),
     $.Deferred(function( deferred ){
         $( deferred.resolve );
     })
@@ -39,7 +41,7 @@ var getData = function(result) {
                     // Show previous owner with modified text if it's bought or has no previous owner
                     switch(result[i].previousAccount) {
                         case undefined: result[i].properties.previousOwner = "First Owner"; break;
-                        case 'nftmarket': result[i].properties.previousOwner = "Bought from market"; break;
+                        case 'nftmarket': result[i].properties.previousOwner = "Market"; break;
                         default: result[i].properties.previousOwner = result[i].previousAccount; break;
                            }
 					JSONdata.push(result[i].properties);
@@ -56,102 +58,6 @@ var getData = function(result) {
 				}
 				return JSONdata;
             }
-		
-            
-function buildTable(dataInJson) {
-            // Get data for table header. 
-            var col = [];
-            for (var i = 0; i < dataInJson.length; i++) {
-                for (var key in dataInJson[i]) {
-                    if (col.indexOf(key) === -1) {
-                        col.push(key);
-                    }
-                }
-            }
-            
-             // CREATE DYNAMIC TABLE.
-            var table = document.createElement("table");
-            table.setAttribute("id", "jsonDataTable");          
-              // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-            var tr = table.insertRow(-1);    
-            
-            for (var i = -1; i < col.length + 1; i++) {
-                var th = document.createElement("th");      // TABLE HEADER.
-                if (i == -1) { // check boxes
-                    th.innerHTML = '<input type="checkbox" id="mainCheck" name="checkAll" onclick="" style = "visibility: hidden">';
-                    tr.appendChild(th);
-                }
-                else if (i < col.length) {
-                    th.innerText = col[i];
-                    tr.appendChild(th);
-                }
-                else {
-                    th.innerText = "Options";
-                    tr.appendChild(th);
-                }
-                
-            }
-            
-            let cbID = 0;
-            // ADD JSON DATA TO THE TABLE AS ROWS.
-            for (var i = 0; i < dataInJson.length; i++) {
-                
-                tr = table.insertRow(-1);
-                for (var j = -1; j < col.length + 1; j++) {  
-                    if (j == -1) {
-                        var tabCell = tr.insertCell(-1);
-                        // add check box for multiple transfer                   
-                        $('<input />', { type: 'checkbox', id: 'cb'+ cbID, name: 'sendCB', value: dataInJson[i]._id, onclick: 'getSelected()' }).appendTo(tabCell);
-                        cbID++;
-                        // checkCol.appendChild(btn);     
-                        }
-                    else if (j < col.length) {
-                            var tabCell = tr.insertCell(-1);
-                            tabCell.innerHTML = dataInJson[i][col[j]];
-                        } 
-                    else {
-                        var tabCell = tr.insertCell(-1);
-                        // build the send button
-                        var btn = document.createElement('button');
-                        btn.type = "button";
-                        btn.className = "send-btn";
-                        btn.value = JSON.stringify(dataInJson[i]);
-                        btn.addEventListener('click', function() {
-                            sendNFT(this.value);
-                            }, false);
-                        btn.innerHTML = '<img src="images/send.png" />';
-                        tabCell.appendChild(btn); 
-                        
-                        var divider = document.createElement('div');
-                        divider.className = "divider";
-                        tabCell.appendChild(divider); 
-                        
-                        // build the sell button
-                        var sellBtn = document.createElement('button');
-                        sellBtn.type = "button";
-                        sellBtn.className = "sell-btn";
-                        sellBtn.value = JSON.stringify(dataInJson[i]);
-                        sellBtn.addEventListener('click', function() {
-                            sellNFT(this.value);
-                            }, false);
-                        sellBtn.innerHTML = '<img src="images/sell.png" />';
-                        tabCell.appendChild(sellBtn); 
-                    }
-                    
-                }
-            let searchField = document.querySelector('#searchField');
-            searchField.style.visibility = "visible";
-            searchField.placeholder="Search wallet..."
-            searchField.addEventListener('keyup', filterTable, false);
-            }
-    
-            document.querySelector('#totalCardsLabel').innerText = "Total NFTs: " + dataInJson.length;
-    
-            // ADD TABLE TO DOC
-            document.getElementById("dataTable").innerHTML = "";
-            document.getElementById("dataTable").appendChild(table);
-
-        } // end create table function
         
 async function buildButtonClicked() { 
             resetUI();
@@ -241,9 +147,31 @@ function broadcastSendTX() {
             }
         }
 
-function sellNFT(buttonData) {
+function sellNFT(buttonData, price, priceSymbol) {
     buttonData = JSON.parse(buttonData);
-    alert('Function not available yet');
+    console.log(buttonData);
+    
+    // building transaction step by step
+                var transaction = {};
+                transaction.contractName = "nftmarket";
+                transaction.contractAction = "sell";
+                transaction.contractPayload = {};
+                transaction.contractPayload.symbol = currentTable;
+                transaction.contractPayload.nfts = [String(buttonData._id)];
+                transaction.contractPayload.price = price;
+                transaction.contractPayload.priceSymbol = priceSymbol;
+                transaction.contractPayload.fee = 250;
+                
+                message = "Sell " + currentTable + " NFT with ID " + buttonData._id + "(" + buttonData.type + ")" + " for " + price + " " + priceSymbol;
+                hive_keychain.requestCustomJson(document.querySelector('#usernameInput').value, "ssc-mainnet-hive", "Active", JSON.stringify(transaction), message, function(response) {
+	               if (response.success) {
+                       $("#modalDialogContent").append('<p id="sellResponse" style="font-weight: bold"> Successfully placed sell order! </p>');
+                        console.log(response);
+                       }
+                    else {
+                        alert('Transaction failed, please try again!');
+                    }
+                });
 }
 
 // Gets called when a Checkbox is clicked
@@ -333,92 +261,10 @@ function mainCBClciked() {
     // if (already selected) deselect all
     // if else (no seleceted) select first 50
 }
+
+
+
+
         
-function filterTable(event) {
-            var filter = event.target.value.toUpperCase();
-            var table = document.querySelector("#jsonDataTable")
-            var rows = document.querySelector("#jsonDataTable tbody").rows;
-            var cols = document.querySelector('#jsonDataTable').rows[0].cells.length
-            cols -= 1 // - minus 1 so it ignores the buttons
-             for (var i = 1; i < rows.length; i++) {
-                 let countCol = [];
-                 for (var j = 0; j < cols; j++) {
-                    countCol[j] =  rows[i].cells[j].textContent.toUpperCase();         
-                 }
-                 // Switch so you can filter through all columns, instead of one. Working for upto 5
-                 switch (cols) {
-                     case 1: 
-                         if (countCol[0].indexOf(filter) > -1) {
-                            rows[i].style.display = "";
-                         } else {
-                            rows[i].style.display = "none";
-                            } 
-                         break;
-                         
-                     case 2: 
-                         if (countCol[0].indexOf(filter) > -1 || countCol[1].indexOf(filter) > -1) {
-                            rows[i].style.display = "";
-                         } else {
-                            rows[i].style.display = "none";
-                            }          
-                         break;
-                     case 3: 
-                         if (countCol[0].indexOf(filter) > -1 || countCol[1].indexOf(filter) > -1 || countCol[2].indexOf(filter) > -1) {
-                            rows[i].style.display = "";
-                         } else {
-                            rows[i].style.display = "none";
-                            }     
-                         break;
-                     case 4: 
-                         if (countCol[0].indexOf(filter) > -1 || countCol[1].indexOf(filter) > -1 || countCol[2].indexOf(filter) > -1 || countCol[3].indexOf(filter) > -1) {
-                            rows[i].style.display = "";
-                         } else {
-                            rows[i].style.display = "none";
-                            }     
-                         break;
-                     case 5:
-                         if (countCol[0].indexOf(filter) > -1 || countCol[1].indexOf(filter) > -1 || countCol[2].indexOf(filter) > -1 || countCol[3].indexOf(filter) > -1 || countCol[4].indexOf(filter) > -1) {
-                            rows[i].style.display = "";
-                         } else {
-                            rows[i].style.display = "none";
-                            } 
-                         break;
-                     case 6: 
-                         if (countCol[0].indexOf(filter) > -1 || countCol[1].indexOf(filter) > -1 || countCol[2].indexOf(filter) > -1 || countCol[3].indexOf(filter) > -1 || countCol[4].indexOf(filter) > -1 || countCol[5].indexOf(filter) > -1) {
-                            rows[i].style.display = "";
-                         } else {
-                            rows[i].style.display = "none";
-                            } 
-                         break;
-                      case 7:
-                         if (countCol[0].indexOf(filter) > -1 || countCol[1].indexOf(filter) > -1 || countCol[2].indexOf(filter) > -1 || countCol[3].indexOf(filter) > -1 || countCol[4].indexOf(filter) > -1 || countCol[5].indexOf(filter) > -1 || countCol[6].indexOf(filter) > -1) {
-                            rows[i].style.display = "";
-                         } else {
-                            rows[i].style.display = "none";
-                            } 
-                         break;
-                      case 8:
-                         if (countCol[0].indexOf(filter) > -1 || countCol[1].indexOf(filter) > -1 || countCol[2].indexOf(filter) > -1 || countCol[3].indexOf(filter) > -1 || countCol[4].indexOf(filter) > -1 || countCol[5].indexOf(filter) > -1 || countCol[6].indexOf(filter) > -1 || countCol[7].indexOf(filter) > -1) {
-                            rows[i].style.display = "";
-                         } else {
-                            rows[i].style.display = "none";
-                            } 
-                         break;
-                      case 9:
-                         if (countCol[0].indexOf(filter) > -1 || countCol[1].indexOf(filter) > -1 || countCol[2].indexOf(filter) > -1 || countCol[3].indexOf(filter) > -1 || countCol[4].indexOf(filter) > -1 || countCol[5].indexOf(filter) > -1 || countCol[6].indexOf(filter) > -1 || countCol[7].indexOf(filter) > -1 || countCol[8].indexOf(filter) > -1) {
-                            rows[i].style.display = "";
-                         } else {
-                            rows[i].style.display = "none";
-                            } 
-                         break;
-                      case 10:
-                         if (countCol[0].indexOf(filter) > -1 || countCol[1].indexOf(filter) > -1 || countCol[2].indexOf(filter) > -1 || countCol[3].indexOf(filter) > -1 || countCol[4].indexOf(filter) > -1 || countCol[5].indexOf(filter) > -1 || countCol[6].indexOf(filter) > -1 || countCol[7].indexOf(filter) > -1 || countCol[8].indexOf(filter) > -1 || countCol[9].indexOf(filter) > -1) {
-                            rows[i].style.display = "";
-                         } else {
-                            rows[i].style.display = "none";
-                            } 
-                         break;
-                        }
-                        }
-            } 
+
   
