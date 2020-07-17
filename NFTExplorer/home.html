@@ -21,8 +21,7 @@
          <li style = "display: inline"><a class = "aButton" href="marketStream.html">Market Stream</a></li>
     </ul>
         
-    <p style = "font-size: 15px"> This is still in heavy testing phase, if you find any bug please report them to me on Discord okean123#2974 </p>
-    <p style = "font-size: 15px"> Note: This currently shows only upto 1000 cards. I will introduce an update in the future that will show all cards.  </p>      
+    <p style = "font-size: 15px"> This is still in heavy testing phase, if you find any bug please report them to me on Discord okean123#2974 </p>      
           
     <p id = "header" style =  "font-size: 15px; font-weight: bold;"> Click on the button to create a table from the JSON data.<br><br> Show</p>
           
@@ -34,8 +33,7 @@
           <p id = "topText" style =  
         "font-size: 15px; font-weight: bold;"> 
               NFTs for account: @ </p>
-    
-	
+          
 	<input type="text" class = "inputField" id="usernameInput" name="usernameInput">
       
     <button class = "mainButton" onclick = "buildButtonClicked();"> 
@@ -47,10 +45,11 @@
 
     <div id = "tablediv">    
         <input type="text" class = "inputField" id="searchField" style = "visibility: hidden">  
+        <label id = "totalCardsLabel"></label>
         <p id ="dataTable"> </p>
         <br> <br>
-        <div class="sticky">
-             <button class = "mainButton" id = "sendMultipleButton" onclick = "multipleSendButton()" style = "visibility: hidden"> 
+        <div class="sticky" id = "stickyMenu" style = "visibility: hidden">
+             <button class = "mainButton" id = "sendMultipleButton" onclick = "multipleSendButton()" > 
                 Transfer selected
             </button> 
     </div>

@@ -145,6 +145,8 @@ function buildTable(dataInJson) {
             searchField.addEventListener('keyup', filterTable, false);
             }
     
+            document.querySelector('#totalCardsLabel').innerText = "Total NFTs: " + dataInJson.length;
+    
             // ADD TABLE TO DOC
             document.getElementById("dataTable").innerHTML = "";
             document.getElementById("dataTable").appendChild(table);
@@ -153,10 +155,19 @@ function buildTable(dataInJson) {
         
 async function buildButtonClicked() { 
             resetUI();
+            results = [];
+            let offset = 0;
+            let newData = 1000; 
+            document.querySelector('#totalCardsLabel').innerText = "Loading... Please wait..."
             // get data and build table
-            await getRawData('nft', document.getElementById("game").value, 0).then( function(result) {
-                buildTable(getData(result));
-			});    
+            while (newData == 1000) {
+                await getRawData('nft', document.getElementById("game").value, offset).then( function(result) {
+                    results = results.concat(result);
+                    newData = result.length;
+                    offset += 1000;
+			     });         
+                } 
+            buildTable(getData(results));
             // update account name
             var textHeader = document.getElementById("topText"); 
 			textHeader.innerText = "NFTs for account: @" + document.getElementById("usernameInput").value     
@@ -242,10 +253,10 @@ function getSelected() {
         selected.push($(this).val()); //
     });
     if(selected.length > 0) {
-       document.getElementById("sendMultipleButton").style.visibility="visible";
+       document.getElementById("stickyMenu").style.visibility="visible";
        }
     else {
-       document.getElementById("sendMultipleButton").style.visibility="hidden"; 
+       document.getElementById("stickyMenu").style.visibility="hidden"; 
     } 
     if (selected.length > 50) {
         alert('You can only transfer 50 NFTs in one transaction, please deselect your last checkbox or the transaction will fail');  
@@ -311,11 +322,16 @@ function broadcastMultipleSendTX() {
 }
 
 function resetUI() {
-    document.getElementById("sendMultipleButton").style.visibility="hidden"; 
+    document.getElementById("stickyMenu").style.visibility="hidden"; 
     document.getElementById("searchField").value = "";
     document.querySelector('#sendToLabel').innerText = "Send to:";
     document.querySelector('#succesIndicator').innerText = "";
     clearTableData();
+}
+
+function mainCBClciked() {
+    // if (already selected) deselect all
+    // if else (no seleceted) select first 50
 }
         
 function filterTable(event) {
