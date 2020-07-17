@@ -47,7 +47,6 @@ async function findNFT() {
                 $("#cardData").append("<p> Type: " + nft.properties.type + "</p>");
                 break;            
                }
-        console.log("Test");
     });
     
     
