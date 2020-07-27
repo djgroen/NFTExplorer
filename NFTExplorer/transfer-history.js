@@ -69,7 +69,6 @@ function filterNFTTransfers() {
     // Have to add time because HE doesn't use Unix time
     const currentTimeStamp = new Date().getTime();
     for(j = 0; j < txs.length; j++) {
-        console.log(timestamps[j] + "   " + (toTimestamp(timestamps[j])) ) ;
         for (i = txs[j].length - 1; i >= 0; i--) {
             var sender = txs[j][i].sender
             if (txs[j][i].contract == "nft") {
