@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title> Manage Hive-Engine NFTs </title>
+    <link rel="icon" href="images/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="global.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"> </script>
+    <script src="https://code.jquery.com/jquery-latest.js"> </script>
+    <script type="text/javascript" src="transfer-history.js"> </script> 
+</head>
+<body id = "body">   
+    <div id = "navigation"> 
+        <h1 style = "color:green;" >   
+            OceanWallet   
+        </h1> 
+          
+        <ul style = "list-style-type: none; margin: 0; padding: -10; overflow: hidden; padding: 5px">
+            <li style = "display: inline"><a  class = "aButton" href="home.html">Wallet</a></li>
+            <li style = "display: inline"><a class = "aButton" href="market.html">Market</a></li>
+            <li style = "display: inline"><a class = "aButton" href="marketStream.html">Market History</a></li>
+            <li style = "display: inline"><a class = "aButton" href="transfer-history.html">Transfer History</a></li>
+        </ul>
+        
+        <p style = "font-size: 15px"> This is still in heavy testing phase, if you find any bug please report them to me on Discord okean123#2974 </p>   
+        
+        <p> Note: This feature relies on manually streaming the Hive-Engine sidechain blocks, so it takes more time to load and might be even slower if you have a slow internet connection or computer.</p>
+        <div id = "menu" style = "padding: 5px;"> 
+            <p id = "statusIndicator"> Status: Idle</p> 
+            <input type="number" id = "loadNumber" value = "200" step="10" pattern="\d+" style='width:5em'/>
+            <button id = "getDataButton" class = "mainButton" onclick = "getData()"> Load transfers</button>      
+        </div>
+        <br>
+        <div id = "transferText"> 
+              
+        </div>
+        
+    
+          
+          
+</body>
+</html>
+
+
