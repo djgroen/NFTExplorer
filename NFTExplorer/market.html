@@ -31,6 +31,8 @@
             </ul>
         
             <p style = "font-size: 15px"> This is still in heavy testing phase, if you find any bug please report them to me on Discord okean123#2974 </p>
+            
+            <p> Note: This page may be pretty slow for markets with thousands of items, I'm working on a solution to make it faster. </p>
         </div>   
         <div id = "" style = "display: inline">
             <p>Choose market:</p>
@@ -47,6 +49,14 @@
         <div id = "tableArea">
             <input type="text" class = "inputField" id="searchField" style = "visibility: hidden">  
             <p id ="marketTable"> </p>
+            <div class="sticky" id = "stickyMenu" style = "visibility: hidden">
+                <button class = "mainButton" id = "buyMultipleButton" onclick = "multipleBuyButton()" > 
+                    Buy selected
+                </button>       
+                <button class = "mainButton" id = "cancelMultipleButton" onclick = "multipleCancelButton()" > 
+                    Cancel selected
+                </button> 
+            </div>
         </div>        
     </body>
 </html>

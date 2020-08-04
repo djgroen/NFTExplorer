@@ -50,7 +50,7 @@ var getData = function(result) {
                     // reorder to show _id first
                     switch(table) {
                         case 'STARinstances': 
-                            JSONdata[i] = JSON.parse(JSON.stringify( JSONdata[i], ["_id", "class","stats","type", "previousOwner"])); break;
+                            JSONdata[i] = JSON.parse(JSON.stringify( JSONdata[i], ["_id", "class","type", "stats", "previousOwner"])); break;
                         case 'CITYinstances':  
                             delete JSONdata[i].population; delete JSONdata[i].education; delete JSONdata[i].creativity; delete JSONdata[i].income; delete JSONdata[i].popularity; delete JSONdata[i].workers;
                             JSONdata[i] = JSON.parse(JSON.stringify( JSONdata[i], ["_id", "name", "previousOwner"])); break; 
@@ -98,10 +98,12 @@ function getSelected() {
         selected.push($(this).val()); //
     });
     if(selected.length > 0) {
-       document.getElementById("stickyMenu").style.visibility="visible";
+        document.getElementById("stickyMenu").style.visibility="visible";
+        document.getElementById("checkboxButton").style.visibility="visible";
        }
     else {
-       document.getElementById("stickyMenu").style.visibility="hidden"; 
+        document.getElementById("stickyMenu").style.visibility="hidden"; 
+        document.getElementById("checkboxButton").style.visibility="hidden";
     } 
     if (selected.length > 50) {
         alert('You can only transfer 50 NFTs in one transaction, please deselect your last checkbox or the transaction will fail');  
@@ -156,7 +158,7 @@ function broadcastMultipleSendTX() {
                 transaction.contractPayload.nfts[0].symbol = currentTable;
                 transaction.contractPayload.nfts[0].ids = selectedCB;
                 
-                message = "Send " + currentTable + " NFT with ID " + document.querySelector("#broadcastTXButton").value + " to: " + input;
+                message = "Send " + currentTable + " NFT with ID(s) " + selectedCB + " to: " + input;
                 hive_keychain.requestCustomJson(document.querySelector('#usernameInput').value, "ssc-mainnet-hive", "Active", JSON.stringify(transaction), message, function(response) {
 	               if (response.success) {
                         console.log(response);

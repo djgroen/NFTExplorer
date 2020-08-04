@@ -134,6 +134,7 @@ a:link, a:visited {
 
 #loginArea {
     position: relative;
+    margin: 10px;
     top: 2vh;
     right: 2vw;
     
@@ -178,4 +179,15 @@ div.sticky {
   position: sticky;
   bottom: 0;
   padding-bottom: 10px;
+  width: 80%;
+  margin: auto;
 }
+
+.center {
+    position: relative;
+    align-content: flex-start;
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
+

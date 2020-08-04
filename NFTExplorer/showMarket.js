@@ -19,6 +19,8 @@ var currentTable;
 var loggedIn;
 var currentUser;
 
+var page = window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1);
+
 var getData2 = function(table, account, offSet) {
     table = table + "sellBook";
     return new Promise(function(resolve, reject) {  
@@ -32,13 +34,28 @@ var getData2 = function(table, account, offSet) {
     });
 } 
 
+function show() {
+    var table = url_params.get('table');
+    var account = url_params.get('account');
+    $("#searchField").val("");
+    loadMarket2(); 
+}
 
 // loads the UI elements
-async function loadMarket2(table, account) {
+async function loadMarket2() {
     clearTableData();
-    currentTable = table;
+    var table = url_params.get('table');
+    var account = url_params.get('account');
     let offSet = 0;
     await getData2(table, account, offSet).then( function(result){APIDataJson = sortData(result)});
+    
+    
+    // remove login message if no table to avoid confusion
+    if(APIDataJson.length == 0) {
+        $("#loginMessage").html("");
+       }
+    
+    
     let isMore = false;
     // if bigger than thousand enters loop with offset
     if (APIDataJson.length == 1000) {
@@ -63,32 +80,5 @@ async function loadMarket2(table, account) {
         }
     }
     buildTable(APIDataJson);
-}
-
-// logs in, allows buying
-function login2() {
-    var name = $("#loginAccountName").val();
-    hive_keychain.requestSignBuffer(name, "Login", "Active", function(response) {
-        if(response.success == true) {
-            loggedIn = true;
-            currentUser = name;
-            let loginArea = $("#loginAreaFrame");
-            loginArea.html("");
-            var label = $("<label>");
-            label.text(name); 
-            loginArea.append(label);
-            $("#searchField").val("");
-            $("#loginMessage").html("");
-            
-            $(':button').attr('disabled', false);
-           }
-    });
-}
-
-function show() {
-    var table = url_params.get('table');
-    var account = url_params.get('account');
-    loadMarket2(table, account);
-    
 }
 

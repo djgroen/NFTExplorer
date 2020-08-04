@@ -13,12 +13,12 @@
         <div id = "loginArea" >
             <div id = "loginAreaFrame"> 
                 <input type="text" class = "inputField" id="loginAccountName"> 
-                <button placeholder="Account name" id ="loginButton" class = "mainButton" onclick="login2()"> 
+                <button placeholder="Account name" id ="loginButton" class = "mainButton" onclick="login()"> 
                     Login
                 </button>    
             </div>
         </div>    
-        <div id = "navigation"> 
+        <div id = "navigation" style = "margin-left: 20%; margin-right: 20%;"> 
             <h1 style = "color:green;" >   
                 OceanWallet   
             </h1> 
@@ -27,7 +27,7 @@
                 <li style = "display: inline"><a  class = "aButton" href="home.html">Wallet</a></li>
                 <li style = "display: inline"><a class = "aButton" href="market.html">Market</a></li>
                 <li style = "display: inline"><a class = "aButton" href="marketStream.html">Market Stream</a></li>
-                <li style = "display: inline"><a class = "aButton" href="transfer-history.html">Transfer History</a></li>
+                <li style = "display: inline" ><a class = "aButton" href="transfer-history.html">Transfer History</a></li>
             </ul>
          
             <p style = "font-size: 15px"> This is still in heavy testing phase, if you find any bug please report them to me on Discord okean123#2974 </p>    
@@ -36,7 +36,16 @@
         <div id = "tableArea">
             <p id = "loginMessage"> You need to login before you can buy items.</p>
             <input type="text" class = "inputField" id="searchField" style = "visibility: hidden">  
+            <button onClick= "show()"> Reload </button>
             <p id ="marketTable"> </p>
+            <div class="sticky" id = "stickyMenu" style = "visibility: hidden">
+                <button class = "mainButton" id = "buyMultipleButton" onclick = "multipleBuyButton()" > 
+                    Buy selected
+                </button> 
+                <button class = "mainButton" id = "cancelMultipleButton" onclick = "multipleCancelButton()" > 
+                    Cancel selected
+                </button> 
+            </div>
         </div> 
 </body>
 </html>

@@ -18,7 +18,8 @@ function buildTable(dataInJson) {
             for (var i = -1; i < col.length + 1; i++) {
                 var th = document.createElement("th");      // TABLE HEADER.
                 if (i == -1) { // check boxes
-                    th.innerHTML = '<input type="checkbox" id="mainCheck" name="checkAll" onclick="" style = "visibility: hidden">';
+                    // th.innerHTML = '<input type="checkbox" id="mainCheck" name="checkAll" onclick="" style = "visibility: hidden">';
+                    th.innerHTML = '<button type="button" id="checkboxButton" name="Uncheck" onclick="uncheckBoxes()" style = "visibility: hidden" > Uncheck </button>';
                     tr.appendChild(th);
                 }
                 else if (i < col.length) {
@@ -79,6 +80,7 @@ function buildTable(dataInJson) {
                     }
                     
                 }
+                
             let searchField = document.querySelector('#searchField');
             searchField.style.visibility = "visible";
             searchField.placeholder="Search wallet..."
@@ -180,3 +182,11 @@ function filterTable(event) {
                         }
                         }
             } 
+
+function uncheckBoxes() {
+    $('#jsonDataTable' + ' :checkbox:enabled').prop('checked', false);
+    document.getElementById("stickyMenu").style.visibility="hidden"; 
+    if (document.getElementById("checkboxButton")) {
+        document.getElementById("checkboxButton").style.visibility="hidden"; 
+    }
+}
