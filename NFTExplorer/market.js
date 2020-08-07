@@ -7,8 +7,7 @@ $.when(
         $( deferred.resolve );
     })
 ).done(function(){
-        ssc = new SSC('https://api.hive-engine.com/rpc');    
-        readCookie();    
+        ssc = new SSC('https://api.hive-engine.com/rpc');        
 });
 
 var APIDataJson = [];
@@ -18,6 +17,10 @@ var currentUser = "";
 var currentSort = -1;
 
 var page = window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1);
+
+window.addEventListener("load", function(){
+    readCookie();
+});
 
 // fetches actual data
 var getData = function(contract, table, offSet) {
