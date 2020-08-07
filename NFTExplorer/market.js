@@ -299,7 +299,12 @@ function login() {
             
             // create name label
             var label = $("<label>");
-            label.text(name);
+            if(page.includes("showMarket")) {
+                label.html('<a ' + 'target="_blank"' + 'href="' + window.location.href + '">'+ name +'</a>'); 
+               }
+            else {
+                label.html('<a ' + 'target="_blank"' + 'href="./showMarket.html?table=' + document.querySelector("#game").value + '&account=' + name + '">'+ name +'</a>');     
+            }
             label.css("margin", "10px");
             loginArea.append(label);
             
@@ -336,7 +341,12 @@ function readCookie() {
             
             // create name label
             var label = $("<label>");
-            label.text(name);
+            if(page.includes("showMarket")) {
+                label.html('<a ' + 'target="_blank"' + 'href="' + window.location.href + '">'+ name +'</a>'); 
+               }
+            else {
+                label.html('<a ' + 'target="_blank"' + 'href="./showMarket.html?table=' + document.querySelector("#game").value + '&account=' + name + '">'+ name +'</a>');     
+            }
             label.css("margin", "10px");
             loginArea.append(label);
             
