@@ -316,13 +316,13 @@ function login() {
             else {
                 loadMarket();    
             }    
-            document.cookie="account=" + name;
+            document.cookie="account=" + name + "; expires=Thu, 03 Jan 2030 00:00:01 GMT;";
            }
     });
 }
 
 function readCookie() {
-    if(!(getCookie("account") == null )) {
+    if(!(document.cookie = "" )) {
         var name = document.cookie.split('=')[1];
         hive_keychain.requestSignBuffer(name, "Login", "Posting", function(response) {
         if(response.success == true) {
@@ -351,7 +351,7 @@ function readCookie() {
                }
            }
         });
-    }
+    } 
 }
 
 function logout()  {
@@ -539,26 +539,6 @@ function boxesCheckedValid() {
     }             
 }
 
-function getCookie(name) {
-    var dc = document.cookie;
-    var prefix = name + "=";
-    var begin = dc.indexOf("; " + prefix);
-    if (begin == -1) {
-        begin = dc.indexOf(prefix);
-        if (begin != 0) return null;
-    }
-    else
-    {
-        begin += 2;
-        var end = document.cookie.indexOf(";", begin);
-        if (end == -1) {
-        end = dc.length;
-        }
-        
-        console.log(decodeURI(dc.substring(begin + prefix.length, end)));
-    return decodeURI(dc.substring(begin + prefix.length, end));
-    }
-} 
        
 
         
