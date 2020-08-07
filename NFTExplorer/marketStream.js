@@ -43,11 +43,18 @@ function showData(data) {
         let buyer  = data[i].account;
         let buyerlink = "<a href='peakd.com/@'>" + buyer;
         let sellers = data[i].counterparties[0].account;
-        let nfts = data[i].counterparties[0].nftIds[0];
+        let nfts = data[i].counterparties[0].nftIds;
         let price = parseFloat(data[i].price);
         let symbol = data[i].priceSymbol;
-        let timestamp = data[i].timestamp;
-        $(div).append($('<p>' + '<a ' + 'target="_blank"' + ' href="https://peakd.com/@' + buyer + '">'+buyer+'</a>' + ' bought NFT with ID ' + '<a ' + 'target="_blank"' + ' href="https://okean123.github.io/NFTExplorer/lookup.html?table=' + currentTable + '&id=' + nfts + '">'+ nfts +'</a>' + ' from ' + '<a ' + 'target="_blank"' + ' href="https://peakd.com/@' + sellers + '">'+sellers+'</a>' + ' for ' + price + ' ' + symbol + ' ' + '<em>' + timeDifference(currentTimeStamp,timestamp * 1000) + '</em>' + '</p>'));
+        let timestamp = data[i].timestamp;       
+        nftList = '<a ' + 'target="_blank"' + ' href="https://okean123.github.io/NFTExplorer/lookup.html?table=' + currentTable + '&id=' + nfts[0] + '">'+ nfts[0] +'</a>' 
+        for (let i = 1; i < nfts.length; i++) {
+            nftList += ', <a ' + 'target="_blank"' + ' href="https://okean123.github.io/NFTExplorer/lookup.html?table=' + currentTable + '&id=' + nfts[i] + '">'+ nfts[i] +'</a>' 
+        }
+
+        $(div).append($('<p>' + '<a ' + 'target="_blank"' + ' href="https://peakd.com/@' + buyer + '">'+buyer+'</a>' + ' bought NFT(s) with ID(s) ' 
+                        + nftList 
+                        + ' from ' + '<a ' + 'target="_blank"' + ' href="https://peakd.com/@' + sellers + '">'+sellers+'</a>' + ' for ' + price + ' ' + symbol + ' ' + '<em>' + timeDifference(currentTimeStamp,timestamp * 1000) + '</em>' + '</p>'));
     }
 }
 
