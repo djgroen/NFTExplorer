@@ -15,7 +15,7 @@ var fans = [];
 var	result = [];
 
 window.onload = function() {
-	document.getElementById("body").innerText = "Loading. Please wait.";
+    $("#body").append('<p id = "loading"> Loading. Please wait. </p>')
 	getAll().then( () => loaded()  );
 }
 
@@ -24,12 +24,13 @@ function loaded() {
 		clear();
 		countFans(data);
 		buildData();
+        createDownload();
 		showData();
 }
 
 //clears the page
 function clear() {
-	document.getElementById("body").innerText = "";
+	$("#loading").remove()
 }
 
 // builds a single array from the players and fans arrays to sort and show it
@@ -48,7 +49,13 @@ function showData() {
 	result.sort(function(a, b){return a.split(":")[1] - b.split(":")[1]});
 	result.reverse();
 
-	document.getElementById("body").innerText = result.join('\r\n');	
+    // $("#body").append('<div id = "stats"><p>' +  + '</p></div>')
+    for (let i = 0; i < result.length; i++) {
+        let userdata = '<span class = "user">' + result[i].split(":")[0] + '</span>'
+        userdata += '<span class = "fans">' + result[i].split(":")[1] + '</span>'
+        userdata += '<br>'
+        $("#list").append(userdata);
+    }
 }
 
 function countFans(data) {
@@ -92,5 +99,18 @@ async function getAll() {
 	while (length > 999) {
 		await   getData("nft","STARinstances", offset).then(function(result){ length = result.length; offset += 1000; data = data.concat(result); }) 
 	}
+}
+
+function createDownload() {
+    var currentdate = new Date(); 
+    var datetime = "" + currentdate.getDate() + 
+                + (currentdate.getMonth()+1)  +  
+                + currentdate.getFullYear() +   
+                + currentdate.getHours() +   
+                + currentdate.getMinutes()
+    $("#actionArea").prepend('<a id="downloadLink" class = "button" href="#" download="risingstarTopFans' + datetime +'.txt">DOWNLOAD RAW DATA</a>') 
+    $("a#downloadLink").click(function() {
+        this.href = "data:text/plain;charset=UTF-8," + result.join('\r\n');
+    });
 }
 
