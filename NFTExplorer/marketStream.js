@@ -71,11 +71,11 @@ function timeDifference(current, previous) {
     previous = moment.utc(moment.unix(previous))
     let diff = current.diff(previous, "minutes")
     if (diff == 0){
-        return  `${current.diff(previous, "seconds")} seconds ago`
+        return  `${current.diff(previous, "seconds")} second(s) ago`
     }
     if (diff >= 60) {
-      return  `${current.diff(previous, "hours")} hours ago`
+      return  `${current.diff(previous, "hours")} hour(s) ago`
     }
-    return `${diff} minutes ago`
+    return `${diff} minute(s) ago`
      
 }
