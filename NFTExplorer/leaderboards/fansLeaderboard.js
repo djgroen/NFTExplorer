@@ -52,23 +52,24 @@ function showData() {
 }
 
 function countFans(data) {
+    var playerexists;
 	for(let j = 0; j < data.length; j++) {
-		var playerexists = false;
-		for(let i = 0; i < players.length; i++) {
-				if (["energyboost","xpboost", "fuel"].includes(data[j].properties.class)) {
-					playerexists = true; break;
-				}
-				if(players[i] == data[j].account ) {
-					fans[i] += parseInt(data[j].properties.stats.split(",")[0]);
-					playerexists = true; break;
-				}
-		}
-		if(!playerexists) {
-					players.push(data[j].account);
-					fans.push(0);
-					j--;
-				}
-	}
+        playerexists = false;
+        if (!["energyboost","xpboost", "fuel", ""].includes(data[j].properties.class)) {
+            for(let i = 0; i < players.length; i++) {
+                  
+                if(players[i] == data[j].account ) {
+                    fans[i] += parseInt(data[j].properties.stats.split(",")[0]);
+                    playerexists = true; break;
+                } 	
+            }
+            if(!playerexists) {
+                players.push(data[j].account);
+                fans.push(0);
+                j--;
+            }   
+        }	
+    }
 }
 
 var getData = function(contract, table, offSet) {
