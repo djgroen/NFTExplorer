@@ -51,6 +51,8 @@ var getData = function(result) {
                     switch(table) {
                         case 'STARinstances': 
                             JSONdata[i] = JSON.parse(JSON.stringify( JSONdata[i], ["_id", "class","type", "stats", "previousOwner"])); break;
+			case 'FARMinstances': 
+                            JSONdata[i] = JSON.parse(JSON.stringify( JSONdata[i], ["_id", "name", "edition", "previousOwner"])); break;
                         case 'CITYinstances':  
                             delete JSONdata[i].population; delete JSONdata[i].education; delete JSONdata[i].creativity; delete JSONdata[i].income; delete JSONdata[i].popularity; delete JSONdata[i].workers;
                             JSONdata[i] = JSON.parse(JSON.stringify( JSONdata[i], ["_id", "name", "previousOwner"])); break; 
