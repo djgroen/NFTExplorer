@@ -49,7 +49,7 @@ function adjustData() {
         object.headball = Math.round(object.headball);
         object.shot = Math.round(object.shot);
         object.speed = Math.round(object.speed);
-        object.overall_strength = Math.round(object.speed);
+        object.overall_strength = Math.round(object.overall_strength);
         switch(object.type) {
             case "1": object.type = "Goal"; break;
             case "2": object.type = "Def"; break;
