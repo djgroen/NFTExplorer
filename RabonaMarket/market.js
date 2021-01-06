@@ -7,7 +7,7 @@ $.when(
     getMarketActive();
 });
 
-const apiserver = "http://api.rabona.io/";
+const apiserver = "https://api.rabona.io/";
 const marketapi = apiserver + "asks";
 
 var marketdata;
@@ -22,9 +22,7 @@ function getMarketData(active, age_from, age_to, os_from, os_to) {
       }).done(function(data) {
         marketdata = data;
         adjustData();
-        // DELETE LATER
-            buildTable();
-        //
+        buildTable();
     });
 }
 
