@@ -7,7 +7,7 @@ $.when(
     getMarketActive();
 });
 
-const apiserver = "http://api.rabona.io/";
+const apiserver = "https://api.rabona.io/";
 const marketapi = apiserver + "asks";
 
 var marketdata;
@@ -22,9 +22,7 @@ function getMarketData(active, age_from, age_to, os_from, os_to) {
       }).done(function(data) {
         marketdata = data;
         adjustData();
-        // DELETE LATER
-            buildTable();
-        //
+        buildTable();
     });
 }
 
@@ -51,7 +49,11 @@ function adjustData() {
         object.headball = Math.round(object.headball);
         object.shot = Math.round(object.shot);
         object.speed = Math.round(object.speed);
+<<<<<<< HEAD
         object.overall_strength = Math.round(object.overall_strength); */ // Rounding done by datatables
+=======
+        object.overall_strength = Math.round(object.overall_strength);
+>>>>>>> e3057468a6b9dbddbdfea575d872602140d28cbd
         switch(object.type) {
             case "1": object.type = "Goal"; break;
             case "2": object.type = "Def"; break;
