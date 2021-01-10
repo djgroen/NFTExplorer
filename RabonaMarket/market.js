@@ -51,9 +51,9 @@ function adjustData() {
         object.speed = Math.round(object.speed);
 <<<<<<< HEAD
         object.overall_strength = Math.round(object.overall_strength); */ // Rounding done by datatables
-=======
+
         object.overall_strength = Math.round(object.overall_strength);
->>>>>>> e3057468a6b9dbddbdfea575d872602140d28cbd
+
         switch(object.type) {
             case "1": object.type = "Goal"; break;
             case "2": object.type = "Def"; break;
