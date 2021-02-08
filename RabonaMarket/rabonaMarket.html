@@ -3,13 +3,52 @@
     <head>
         <title> Rabona Market by okean123</title>
         <script src="https://code.jquery.com/jquery-latest.js"> </script> 
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script> 
         <script type="text/javascript" src="./market.js"></script> 
-        <link rel="icon" type="image/png" href="./favicon.png"/>
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">
-        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="./style/style.css">
+        <link rel="stylesheet" href="./style/datatables.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/1.2.1/css/searchPanes.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.0.1/css/searchBuilder.dataTables.min.css">
     </head>
     
     <body>   
+        <div id="loading"> 
+            <p id = "loadingP"> Loading... Please wait... </p>
+        </div>
+        <div id = "controls" style = "display: none;"> 
+            <div id = "ageControls"> 
+                Minimum age:
+                <input type="number" id="minAge" name="minAge">
+                Maximum age:
+                <input type="number" id="maxAge" name="maxAge">
+            </div>
+            <br>
+            <div id = "osControls">
+                Minimum OS:
+                <input type="number" id="minOS" name="minOS">
+                Maximum OS:
+                <input type="number" id="maxOS" name="maxOS">    
+            </div>
+            <div id = "posControls">
+                Positions:
+                
+                <input type="checkbox" id="goalBox" name="goalBox" checked>
+                <label for="goalBox">Goal</label>
+                
+                <input type="checkbox" id="defBox" name="defBox" checked>
+                <label for="defBox">Def</label>
+                
+                <input type="checkbox" id="midBox" name="midBox" checked>
+                <label for="midBox">Mid</label>
+                
+                <input type="checkbox" id="attBox" name="attBox" checked>
+                <label for="attBox">Att</label>
+            </div>  
+            <div id = "preferences"> 
+            </div>
+        </div>
         <div id ="tableArea" style="width: 100%">
         </div>
     </body>
