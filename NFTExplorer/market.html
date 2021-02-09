@@ -5,8 +5,12 @@
         <title> Manage Hive-Engine NFTs </title>
         <link rel="icon" href="images/favicon.ico">
         <link rel="stylesheet" type="text/css" href="global.css">
+        <link rel="stylesheet" type="text/css" href="./dtstyle/datatables.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/searchpanes/1.2.1/css/searchPanes.dataTables.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
         <script src="https://code.jquery.com/jquery-latest.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
         <script type="text/javascript" src="market.js"></script> 
     </head>
     <body id = "body">
@@ -32,7 +36,7 @@
         
             <p style = "font-size: 15px"> This is still in heavy testing phase, if you find any bug please report them to me on Discord okean123#2974 </p>
             
-            <p> Note: This page may be pretty slow for markets with thousands of items, I'm working on a solution to make it faster. </p>
+            <p> Note: Loading thousands of items can take some time, please be patient.</p>
         </div>   
         <div id = "" style = "display: inline">
             <p>Choose market:</p>
@@ -47,7 +51,6 @@
             <br><br> 
         </div>
         <div id = "tableArea">
-            <input type="text" class = "inputField" id="searchField" style = "visibility: hidden">  
             <p id ="marketTable"> </p>
             <div class="sticky" id = "stickyMenu" style = "visibility: hidden">
                 <button class = "mainButton" id = "buyMultipleButton" onclick = "multipleBuyButton()" > 

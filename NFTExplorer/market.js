@@ -2,6 +2,9 @@ var ssc;
 $.when(
     $.getScript( "https://cdn.jsdelivr.net/npm/@hivechain/hivejs/dist/hivejs.min.js" ),
     $.getScript( "https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js" ),
+    $.getScript( "https://cdn.datatables.net/plug-ins/1.10.22/pagination/input.js" ),
+    $.getScript( "https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js" ),
+    $.getScript( "https://cdn.datatables.net/searchpanes/1.2.1/js/dataTables.searchPanes.min.js" ),
     $.getScript( "./dialogs.js" ),
     $.Deferred(function( deferred ){
         $( deferred.resolve );
@@ -14,7 +17,6 @@ var APIDataJson = [];
 var currentTable = "";
 var loggedIn = false;
 var currentUser = "";
-var currentSort = -1;
 
 var page = window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1);
 
@@ -42,16 +44,22 @@ function sortData(data) {
             currentTable = new URL(document.URL).searchParams.get("table"); 
         }
         for (let i = 0 ; i < data.length; i++) { 
+			if (i == 1) {console.log(data[i])};
             JSONdata.push({});
             JSONdata[i].seller = data[i].account;
             JSONdata[i].nftId = data[i].nftId;
             switch(currentTable) {
                 case 'STAR': 
-                    JSONdata[i].card = data[i].grouping.class + ": "+ data[i].grouping.type;
+                    // JSONdata[i].card = data[i].grouping.class + ": "+ data[i].grouping.type;
+					JSONdata[i].class = data[i].grouping.class;
+					JSONdata[i].type = data[i].grouping.type;
                     break;
                 case 'CITY': 
                     JSONdata[i].name = data[i].grouping.name;
                     break;
+				case "NFTSR":
+					JSONdata[i].artSeries = data[i].grouping.artSeries;
+					break;
             }
             JSONdata[i].price = parseFloat(data[i].price) 
 			JSONdata[i].priceSymbol = data[i].priceSymbol;
@@ -62,6 +70,7 @@ function sortData(data) {
 // loads the UI elements
 async function loadMarket() {
     clearTableData();
+	$("#marketTable").text("Fetching data from blockchain...")
     let table = document.querySelector("#game").value
     currentTable = table;
     table = table + "sellBook";
@@ -91,7 +100,7 @@ async function loadMarket() {
             offSet += 1000;
         }
     }
-    $("#searchField").val("");
+	$("#marketTable").text("Building basic table...");
     buildTable(APIDataJson);
 }
 
@@ -131,7 +140,8 @@ function buildTable(marketData) {
     table.setAttribute("id", "jsonDataTable");
     
     // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-    var tr = table.insertRow(-1);    
+	var thead = table.createTHead();
+    var tr = thead.insertRow(-1);    
     
     for (var i = -1; i < col.length + 1; i++) {
                 var th = document.createElement("th");      // TABLE HEADER.
@@ -153,8 +163,10 @@ function buildTable(marketData) {
     
     let cbID = 1;
     // ADD JSON DATA TO THE TABLE AS ROWS.
+	var tbody = table.createTBody();
+	
     for (var i = 0; i < marketData.length; i++) {
-        tr = table.insertRow(-1);
+        tr = tbody.insertRow(0);
         for (var j = -1; j < col.length; j++) {    
             if (j == -1) {
                         var tabCell = tr.insertCell(-1);
@@ -194,51 +206,34 @@ function buildTable(marketData) {
             tabCell.appendChild(btn);   
              
     }
-    
-    // Show search input field
-    let searchField = document.querySelector('#searchField');
-    searchField.style.visibility = "visible";
-    searchField.placeholder="Search market..."
-    searchField.addEventListener('keyup', filterTable, false);
        
     // ADD TABLE TO DOC
-    document.querySelector("#marketTable").innerHTML = "";
+    document.querySelector("#marketTable").innerHTML= "";
     document.querySelector("#marketTable").appendChild(table);;
 	
-    addSortListeners();
-    
+	let searchPaneCols;
+	switch(currentTable) {
+		case "STAR": searchPaneCols = [3,4,6]; break;
+		case "CITY": searchPaneCols = [1,3,5]; break;
+		case "NFTSR": searchPaneCols = [1,3,5]; break;
+	}
+	$('#jsonDataTable').DataTable({
+		"dom": 'Plfrtip',
+		"order": [[ 2, "desc" ]],
+		"orderClasses": false,
+		"pageLength": 100,
+		"lengthMenu": [[10, 25, 100, 500, -1], [10, 25, 100, 500, "All (may cause lag)"]],
+		"pagingType": 'input',
+		"searchPanes": {
+			"cascadePanes": true,
+            "columns": searchPaneCols
+        },
+		"columnDefs": [
+		{ "orderable": false, targets: 0 }
+		]
+	});
 }   // end build table
 
-function addSortListeners() {
-    	// add sort click listeners
-
-                           headers = document.getElementsByTagName("th");
-                           headers[1].addEventListener("click", function(){ sortTableString(1); }); 
-	                       headers[3].addEventListener("click", function(){ sortTableString(3); }); 
-	                       headers[5].addEventListener("click", function(){ sortTableString(5); }); 
-	                       headers[2].addEventListener("click", function(){ sortTableNumber(2); }); 
-	                       headers[4].addEventListener("click", function(){ sortTableNumber(4); });    
-}
-
-// Search table and filter
-function filterTable(event) {
-    var filter = event.target.value.toUpperCase();
-    var table = document.querySelector("#jsonDataTable")
-    var rows = document.querySelector("#jsonDataTable tbody").rows;
-    var cols = document.querySelector('#jsonDataTable').rows[0].cells.length
-    cols -= 1 // - minus 1 so it ignores the buttons
-    for (var i = 1; i < rows.length; i++) {
-        let countCol = [];
-        for (var j = 0; j < cols; j++) {
-            countCol[j] =  rows[i].cells[j].textContent.toUpperCase();         
-        }    
-        if (countCol[0].indexOf(filter) > -1 || countCol[1].indexOf(filter) > -1 || countCol[2].indexOf(filter) > -1 || countCol[3].indexOf(filter) > -1 || countCol[4].indexOf(filter) > -1 ||countCol[5].indexOf(filter) > -1) {
-            rows[i].style.display = "";
-        } else {
-            rows[i].style.display = "none";
-            }     
-        }
-}
   
 // builds and broadcasts transaction
 function buyNFT(button) {
@@ -371,53 +366,6 @@ function logout()  {
     document.cookie = "account" + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     location.reload();
     return false;
-}
-                                     
-
-// sorts table 
-function sortTableString(columnNumber) {
-	// do nothin now
-}
-
-//testing 
-// users.sort((a, b) => a.firstname.localeCompare(b.firstname))
-
-function sortTableNumber(columnNumber){
-    if (currentSort == columnNumber) {
-		reverseTableRows();
-		return;
-	}
-    var tbl = document.getElementById("jsonDataTable").tBodies[0];
-    var store = [];
-    for(var i=0, len=tbl.rows.length; i<len; i++){
-        var row = tbl.rows[i];
-        var sortnr = parseFloat(row.cells[columnNumber].innerText);
-        if(!isNaN(sortnr)) store.push([sortnr, row]);
-    }
-    store.sort(function(x,y){
-        return x[0] - y[0];
-    });
-    for(var i=0, len=store.length; i<len; i++){
-        tbl.appendChild(store[i][1]);
-    }
-    store = null;
-    currentSort = columnNumber;
-}
-
-function reverseTableRows() {
-    var table = document.getElementById("jsonDataTable"),
-        newTbody = document.createElement('tbody'),
-        oldTbody = table.tBodies[0],
-		
-        rows = oldTbody.rows;
-		newTbody.appendChild(rows[0]);
-        i = rows.length - 1;
-
-    while (i >= 0) {
-        newTbody.appendChild(rows[i]);
-        i -= 1;
-    }
-    oldTbody.parentNode.replaceChild(newTbody, oldTbody);
 }
 
 // Gets called when a Checkbox is clicked and returns IDs of selected checkboxes
