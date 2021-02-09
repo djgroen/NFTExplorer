@@ -44,7 +44,6 @@ function sortData(data) {
             currentTable = new URL(document.URL).searchParams.get("table"); 
         }
         for (let i = 0 ; i < data.length; i++) { 
-			if (i == 1) {console.log(data[i])};
             JSONdata.push({});
             JSONdata[i].seller = data[i].account;
             JSONdata[i].nftId = data[i].nftId;
@@ -232,7 +231,20 @@ function buildTable(marketData) {
 		{ "orderable": false, targets: 0 }
 		]
 	});
+	eventListeners();
 }   // end build table
+
+function eventListeners() {
+	let panes = document.getElementsByClassName("dataTables_scrollBody");
+	for (var i = 0; i < panes.length; i++) {
+		panes[i].addEventListener('click', uncheckBoxes, false);
+	}
+	let search = document.getElementById("jsonDataTable_filter");
+	search.addEventListener('keyup',uncheckBoxes,false)
+	
+	let lengthSelect = document.getElementById("jsonDataTable_length");
+	lengthSelect.addEventListener('change', uncheckBoxes, false);
+}
 
   
 // builds and broadcasts transaction
@@ -374,7 +386,7 @@ function getSelected() {
     if (!loggedIn) {
         alert("Please login before trying to buy NFTs");
         uncheckBoxes();
-        return; 
+        return;
         }
     
     $("input:checkbox[name=sendCB]:checked").each(function(){
