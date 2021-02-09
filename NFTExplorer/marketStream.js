@@ -76,6 +76,5 @@ function timeDifference(current, previous) {
     if (diff >= 60) {
       return  `${current.diff(previous, "hours")} hour(s) ago`
     }
-    return `${diff} minute(s) ago`
-     
+    return `${diff} minute(s) ago`  
 }
