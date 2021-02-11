@@ -37,7 +37,6 @@
             <p style = "font-size: 15px"> This is still in heavy testing phase, if you find any bug please report them to me on Discord okean123#2974 </p>
             
             <p> Note: Loading thousands of items can take some time, please be patient.</p>
-            <p> Note: If you want to interact with multiple NFTs at once, either do all your filtering first or set the page length to "all". Otherwise your selected NFTs will be deselected.</p>
         </div>   
         <div id = "" style = "display: inline">
             <p>Choose market:</p>
@@ -46,20 +45,13 @@
                 <option value="CITY">DCity</option> 
                 <option value="NFTSR">NFT Showroom</option>
             </select>
-            <button class = "mainButton" onclick = "loadMarket();"> 
+            <button id = "loadButton" class = "mainButton" onclick = "loadMarket();"> 
                 Load Market
             </button>
             <br><br> 
         </div>
         <div id = "tableArea">
-            <p id ="marketTable"> </p>
-            <div class="sticky" id = "stickyMenu" style = "visibility: hidden">
-                <button class = "mainButton" id = "buyMultipleButton" onclick = "multipleBuyButton()" > 
-                    Buy selected
-                </button>       
-                <button class = "mainButton" id = "cancelMultipleButton" onclick = "multipleCancelButton()" > 
-                    Cancel selected
-                </button> 
+            <div class="sticky" id = "stickyMenu" style = "visibility: visible">
             </div>
         </div>        
     </body>

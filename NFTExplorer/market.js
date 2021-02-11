@@ -1,28 +1,29 @@
 var ssc;
 $.when(
+    $.getScript( "./marketUts.js" ),
+    $.getScript( "./dialogs.js" ),
     $.getScript( "https://cdn.jsdelivr.net/npm/@hivechain/hivejs/dist/hivejs.min.js" ),
     $.getScript( "https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js" ),
     $.getScript( "https://cdn.datatables.net/plug-ins/1.10.22/pagination/input.js" ),
     $.getScript( "https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js" ),
     $.getScript( "https://cdn.datatables.net/searchpanes/1.2.1/js/dataTables.searchPanes.min.js" ),
-    $.getScript( "./dialogs.js" ),
     $.Deferred(function( deferred ){
         $( deferred.resolve );
     })
 ).done(function(){
-        ssc = new SSC('https://api.hive-engine.com/rpc');        
+        ssc = new SSC('https://api.hive-engine.com/rpc');  
+        readCookie();
 });
 
 var APIDataJson = [];
 var currentTable = "";
 var loggedIn = false;
 var currentUser = "";
+// var marketData;
+localStorage["selected"] = JSON.stringify(new Array());
+localStorage["buttonQueue"] = JSON.stringify(new Array());
 
 var page = window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1);
-
-window.addEventListener("load", function(){
-    readCookie();
-});
 
 // fetches actual data
 var getData = function(contract, table, offSet) {
@@ -68,8 +69,8 @@ function sortData(data) {
 
 // loads the UI elements
 async function loadMarket() {
+    document.getElementById("loadButton").disabled = true;
     clearTableData();
-	$("#marketTable").text("Fetching data from blockchain...")
     let table = document.querySelector("#game").value
     currentTable = table;
     table = table + "sellBook";
@@ -99,124 +100,88 @@ async function loadMarket() {
             offSet += 1000;
         }
     }
-	$("#marketTable").text("Building basic table...");
-    buildTable(APIDataJson);
+    buildTableDirect(APIDataJson);
 }
 
-function clearTableData() {
-    uncheckBoxes();
-    document.getElementById("buyMultipleButton").style.visibility="hidden";
-    document.getElementById("cancelMultipleButton").style.visibility="hidden";
-    document.getElementById("stickyMenu").style.visibility="hidden"; 
-    currentSort = 0;
-    APIDataJson = []; 
-}
-
-function uncheckBoxes() {
-    $('#tableArea' + ' :checkbox:enabled').prop('checked', false);
-    document.getElementById("buyMultipleButton").style.visibility="hidden";
-    document.getElementById("cancelMultipleButton").style.visibility="hidden";
-    document.getElementById("stickyMenu").style.visibility="hidden"; 
-    if (document.getElementById("checkboxButton")) {
-        document.getElementById("checkboxButton").style.visibility="hidden"; 
-    }
-}
-
-//builds the actual table and adds data
-function buildTable(marketData) {
-    // Get data for table header. 
-    var col = [];
-    for (var i = 0; i < marketData.length; i++) {
-        for (var key in marketData[i]) {
-            if (col.indexOf(key) === -1) {
-                col.push(key);
-            }
-        }
-    }
-    
-    // CREATE DYNAMIC TABLE.
-    var table = document.createElement("table");
-    table.setAttribute("id", "jsonDataTable");
-    
-    // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-	var thead = table.createTHead();
-    var tr = thead.insertRow(-1);    
-    
-    for (var i = -1; i < col.length + 1; i++) {
-                var th = document.createElement("th");      // TABLE HEADER.
-                if (i == -1) { // check boxes
-                    // th.innerHTML = '<input type="checkbox" id="mainCheck" name="checkAll" onclick="" style = "visibility: hidden">';
-                    th.innerHTML = '<button type="button" id="checkboxButton" name="Uncheck" onclick="uncheckBoxes()" style = "visibility: hidden" > Uncheck </button>';
-                    tr.appendChild(th);
-                }
-                else if (i < col.length) {
-                    th.innerText = col[i];
-                    tr.appendChild(th);
-                }
-                else {
-                    th.innerText = "Options";
-                    tr.appendChild(th);
-                }
-                
-            }
-    
-    let cbID = 1;
-    // ADD JSON DATA TO THE TABLE AS ROWS.
-	var tbody = table.createTBody();
-	
-    for (var i = 0; i < marketData.length; i++) {
-        tr = tbody.insertRow(0);
-        for (var j = -1; j < col.length; j++) {    
-            if (j == -1) {
-                        var tabCell = tr.insertCell(-1);
-                        // add check box for multiple actions
-                        $('<input />', { type: 'checkbox', id: 'cb'+ cbID + "-" + marketData[i].seller, name: 'sendCB', value: marketData[i].nftId, onclick: 'getSelected()' }).appendTo(tabCell);
-                        cbID++;  
-                        }
-            else if (j < col.length) {
-                            var tabCell = tr.insertCell(-1);
-                            tabCell.innerHTML = marketData[i][col[j]];
-                        } 
-        }
-        // build the send or cancel button
-        var tabCell = tr.insertCell(-1);
-            var btn = document.createElement('button');
-            btn.type = "button";
-            btn.className = "buy-btn";
-            btn.value = JSON.stringify(marketData[i]); // save data as string    
-        if (loggedIn && marketData[i].seller == currentUser) {
-                btn.addEventListener('click', function() {
-                    cancelSellOrder(this.value);
-                }, false);
-                btn.innerText = "Cancel";  
+function buildTableDirect(data) {
+    let nfts = [];
+    for (i = 0; i < data.length; i++) { // ADD CHECKBOXES BUTTON ETC
+        nfts[i] = [];
+        if (loggedIn) {
+            let btnid = "addbtn" + data[i].nftId ;
+            nfts[i].push("<button id ='" + btnid + "' onclick = \"addSelected(" + data[i].nftId + ",'" + data[i].seller + "')\"> Add </button>");  
         }
         else {
-            btn.addEventListener('click', function() {
-                buyNFT(this.value);
-            }, false);
-            btn.innerText = "Buy";    
+            nfts[i].push("<button disabled = 'true'> Login to trade</button>");     
         }
+        nfts[i].push(data[i].seller);
+        nfts[i].push(data[i].nftId);
+            switch(currentTable) {
+                case 'STAR': 
+                    nfts[i].push(data[i].class);
+                    nfts[i].push(data[i].type);
+                    break;
+                case 'CITY': 
+                    nfts[i].push(data[i].name);
+                    break;
+				case "NFTSR":
+                    nfts[i].push(data[i].artSeries);
+					break;
+            }
+        nfts[i].push(parseFloat(data[i].price) );
+        nfts[i].push(data[i].priceSymbol);
+        // set button data
         if (loggedIn) {
-                btn.disabled = false;
+            if(data[i].seller == currentUser) {
+                nfts[i].push("<button onclick='cancelSellOrder(" + data[i].nftId + ")'> Cancel </button>");    
             }
             else {
-                btn.disabled = true;
+                nfts[i].push("<button onclick='buyNFT(" + data[i].nftId + ")'> Buy </button>");     
             }
-            tabCell.appendChild(btn);   
-             
+        }
+        else {
+            nfts[i].push("<button disabled = 'true'> Login to trade</button>");     
+        }
+
     }
-       
-    // ADD TABLE TO DOC
-    document.querySelector("#marketTable").innerHTML= "";
-    document.querySelector("#marketTable").appendChild(table);;
-	
-	let searchPaneCols;
+    
+    let cols = [];
+    cols.push({title: "<button id = 'removeAllBtn' style = 'visibility: hidden;' onclick='removeAllSelected()'>Remove all</button>"});
+    cols.push({title: "seller"});
+    cols.push({title: "nftId"});
+    switch(currentTable) {
+        case 'STAR': 
+            cols.push({title: "class"});
+            cols.push({title: "type"});
+            break;
+        case 'CITY': 
+            cols.push({title: "name"});
+            break;
+        case "NFTSR":
+            cols.push({title: "artSeries"});
+            break;
+    }
+    cols.push({title: "price"});
+    cols.push({title: "priceSymbol"});
+    cols.push({title: "Options"})
+    
+    let searchPaneCols;
 	switch(currentTable) {
 		case "STAR": searchPaneCols = [3,4,6]; break;
 		case "CITY": searchPaneCols = [1,3,5]; break;
 		case "NFTSR": searchPaneCols = [1,3,5]; break;
 	}
-	$('#jsonDataTable').DataTable({
+    
+    let notOrderable = [0];
+    switch(currentTable) {
+		case "STAR": notOrderable.push(7); break;
+		case "CITY":  notOrderable.push(6); break;
+		case "NFTSR":  notOrderable.push(6); break;
+	}
+    
+    var table = $('#table').DataTable({
+        "data": nfts,
+        "columns": cols,
 		"dom": 'Plfrtip',
 		"order": [[ 2, "desc" ]],
 		"orderClasses": false,
@@ -228,289 +193,107 @@ function buildTable(marketData) {
             "columns": searchPaneCols
         },
 		"columnDefs": [
-		{ "orderable": false, targets: 0 }
+		{ "orderable": false, targets: notOrderable}
 		]
 	});
-	eventListeners();
-}   // end build table
+    
+    table.on( 'draw', updateRemovedButtons);
+    document.getElementById("loadButton").disabled = false;
+} // end build table
 
-function eventListeners() {
-	let panes = document.getElementsByClassName("dataTables_scrollBody");
-	for (var i = 0; i < panes.length; i++) {
-		panes[i].addEventListener('click', uncheckBoxes, false);
-	}
-	let search = document.getElementById("jsonDataTable_filter");
-	search.addEventListener('keyup',uncheckBoxes,false)
-	
-	let lengthSelect = document.getElementById("jsonDataTable_length");
-	lengthSelect.addEventListener('change', uncheckBoxes, false);
+function addSelected(item, seller) {
+    current = JSON.parse(localStorage["selected"]);
+    if (current.length >= 50) {
+        alert("You can only add up to 50 NFTs to the cart at the same time.")
+        return;
+    }
+    current.push([item,seller]);
+    localStorage["selected"] = JSON.stringify(current);
+    let btn = "#addbtn" + item;
+    $(btn).html("Remove");
+    $(btn).attr("onclick","removeSelected(" + item + ",'" + seller + "')");
+    updateRemoveAllButton();
+    updateActionButtons();
+}
+
+function removeSelected(removeItem, seller) {
+    current = JSON.parse(localStorage["selected"]);
+    current = jQuery.grep(current, function(item) {
+        return item[0] != removeItem;
+    });
+    localStorage["selected"] = JSON.stringify(current);
+    let btn = "#addbtn" + removeItem;
+    $(btn).html("Add");   
+    $(btn).attr("onclick","addSelected(" + removeItem + ",'" + seller + "')");
+    updateRemoveAllButton();
+    updateActionButtons();
+}
+
+function removeAllSelected() {
+    current = JSON.parse(localStorage["selected"]);
+    btnqueue = JSON.parse(localStorage["buttonQueue"]);
+    current.forEach(function(item) {
+        let btn = "#addbtn" + item[0];
+        if($("#addbtn" + item[0]).length) {
+            removeSelected(item[0],item[1]);     
+        }
+        else {
+            btnqueue.push([item[0],item[1]]);
+            removeSelected(item[0],item[1]); 
+        }
+    });
+    localStorage["selected"] = JSON.stringify(new Array());
+    localStorage["buttonQueue"] = JSON.stringify(btnqueue);
+    updateRemoveAllButton();
+    updateActionButtons();
+}
+
+// if the remove all button is used the buttons that are currently not rendered are not updated
+// this function is called everytime the table is drawn and tries to update the leftover buttons
+function updateRemovedButtons() {
+    btnqueue = JSON.parse(localStorage["buttonQueue"]);
+    btnqueue.forEach(function(removeItem) {
+        if($("#addbtn" + removeItem[0]).length) {
+            let btn = "#addbtn" + removeItem[0];
+            $(btn).html("Add");   
+            $(btn).attr("onclick","addSelected(" + removeItem[0] + ",'" + removeItem[1] + "')");   
+            btnqueue = jQuery.grep(btnqueue, function(item) {
+                return item[0] != removeItem[0];
+            });
+        }        
+    });
+    localStorage["buttonQueue"] = JSON.stringify(btnqueue);
+}
+
+function updateRemoveAllButton() {
+    current = JSON.parse(localStorage["selected"]);
+    if (current.length > 0) {
+        $("#removeAllBtn").css("visibility", "visible"); 
+    }
+    else {
+        $("#removeAllBtn").css("visibility", "hidden");    
+    }
+}
+
+function clearTableData() {
+    removeAllSelected();
+    updateActionButtons();
+    APIDataJson = []; 
+    localStorage["selected"] = JSON.stringify(new Array());
+    localStorage["buttonQueue"] = JSON.stringify(new Array());
+    $("#table_wrapper").remove();
+    $("#tableArea").prepend("<table id = 'table'> </table>");
+}
+
+function getSelected() {
+    return JSON.parse(localStorage["selected"]);
+}
+
+function getBtnQueue() {
+    return JSON.parse(localStorage["buttonQueue"]);
 }
 
   
-// builds and broadcasts transaction
-function buyNFT(button) {
-    button = JSON.parse(button); // data is stored as string, now converts to json
-    let tx = {};
-    tx.contractName = "nftmarket";
-    tx.contractAction = "buy";
-    tx.contractPayload = {};
-    tx.contractPayload.symbol = currentTable;
-    tx.contractPayload.nfts = [];
-    tx.contractPayload.nfts.push(button.nftId);
-    tx.contractPayload.marketAccount = "oceanwallet";
-    message = "Buy " + button.card + " with ID " + button.nftId;
-                hive_keychain.requestCustomJson(currentUser, "ssc-mainnet-hive", "Active", JSON.stringify(tx), message, function(response) {
-	               if (response.success) {
-                       alert("Succesfully bought NFT!");
-                       $("#searchField").val("");
-
-                       loadMarket();
-                       }
-                    else {
-                        alert('Transaction failed, please try again!');
-                    }
-                });  
-}
-
-function cancelSellOrder(button) {
-    button = JSON.parse(button); // data is stored as string, now converts to json
-    let tx = {};
-    tx.contractName = "nftmarket";
-    tx.contractAction = "cancel";
-    tx.contractPayload = {};
-    tx.contractPayload.symbol = currentTable;
-    tx.contractPayload.nfts = [];
-    tx.contractPayload.nfts.push(button.nftId);
-    message = "Cancel sell order for" + button.card + " with ID " + button.nftId;
-                hive_keychain.requestCustomJson(currentUser, "ssc-mainnet-hive", "Active", JSON.stringify(tx), message, function(response) {
-	               if (response.success) {
-                       alert("Succesfully cancelled sell order!");
-                       $("#searchField").val("");
-                       loadMarket();
-                       }
-                    else {
-                        alert('Transaction failed, please try again!');
-                    }
-                });  
-}
-
-// logs in, allows buying
-function login() {
-    var name = $("#loginAccountName").val();
-    hive_keychain.requestSignBuffer(name, "Login", "Posting", function(response) {
-        if(response.success == true) {
-            loggedIn = true;
-            currentUser = name;
-            let loginArea = $("#loginAreaFrame");
-            loginArea.html("");
-            
-            // create name label
-            var label = $("<label>");
-            if(page.includes("showMarket")) {
-                label.html('<a ' + 'target="_blank"' + 'href="' + window.location.href + '">'+ name +'</a>'); 
-               }
-            else {
-                label.html('<a ' + 'target="_blank"' + 'href="./showMarket.html?table=' + document.querySelector("#game").value + '&account=' + name + '">'+ name +'</a>');     
-            }
-            label.css("margin", "10px");
-            loginArea.append(label);
-            
-            // create logout button
-            let button = $("<button>")
-            button.text("Logout");
-            button.click( () => logout());
-            button.attr("class", "mainButton");
-            loginArea.append(button);
-            
-            $("#searchField").val("");
-
-            if(page.includes("showMarket")) {
-                $("#loginMessage").html(""); 
-                loadMarket2();
-               }
-            else {
-                loadMarket();    
-            }    
-            document.cookie="account=" + name + "; expires=Thu, 03 Jan 2030 00:00:01 GMT;";
-           }
-    });
-}
-
-function readCookie() {
-    if(!(document.cookie = "" )) {
-        var name = document.cookie.split('=')[1];
-        hive_keychain.requestSignBuffer(name, "Login", "Posting", function(response) {
-        if(response.success == true) {
-            loggedIn = true;
-            currentUser = name;
-            let loginArea = $("#loginAreaFrame");
-            loginArea.html("");
-            
-            // create name label
-            var label = $("<label>");
-            if(page.includes("showMarket")) {
-                label.html('<a ' + 'target="_blank"' + 'href="' + window.location.href + '">'+ name +'</a>'); 
-               }
-            else {
-                label.html('<a ' + 'target="_blank"' + 'href="./showMarket.html?table=' + document.querySelector("#game").value + '&account=' + name + '">'+ name +'</a>');     
-            }
-            label.css("margin", "10px");
-            loginArea.append(label);
-            
-            // create logout button
-            let button = $("<button>")
-            button.text("Logout");
-            button.click( () => logout());
-            button.attr("class", "mainButton");
-            loginArea.append(button);;
-            $("#searchField").val("");
-            
-            if(page.includes("showMarket")) {
-                $("#loginMessage").html(""); 
-                loadMarket2();
-               }
-           }
-        });
-    } 
-}
-
-function logout()  {
-    document.cookie = "account" + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    location.reload();
-    return false;
-}
-
-// Gets called when a Checkbox is clicked and returns IDs of selected checkboxes
-function getSelected() {
-    selected = [];
-    if (!loggedIn) {
-        alert("Please login before trying to buy NFTs");
-        uncheckBoxes();
-        return;
-        }
-    
-    $("input:checkbox[name=sendCB]:checked").each(function(){
-        selected.push($(this).val()); //
-    });
-    if(selected.length > 0) {
-       document.getElementById("stickyMenu").style.visibility="visible";
-        switch(boxesCheckedValid() ) {
-            case "buy": 
-                    document.getElementById("buyMultipleButton").style.visibility="visible";
-                    document.getElementById("cancelMultipleButton").style.visibility="hidden"; break;
-            case "cancel":
-                    document.getElementById("buyMultipleButton").style.visibility="hidden";
-                    document.getElementById("cancelMultipleButton").style.visibility="visible";  
-                    break;
-            default: 
-                    document.getElementById("buyMultipleButton").style.visibility="hidden";
-                    document.getElementById("cancelMultipleButton").style.visibility="hidden";
-                    document.getElementById("stickyMenu").style.visibility="hidden"; 
-                    break;
-               }
-        document.getElementById("checkboxButton").style.visibility="visible";
-       }
-    else {
-        document.getElementById("buyMultipleButton").style.visibility="hidden";
-        document.getElementById("cancelMultipleButton").style.visibility="hidden";
-        document.getElementById("stickyMenu").style.visibility="hidden"; 
-        document.getElementById("checkboxButton").style.visibility="hidden";
-    } 
-    if (selected.length > 50) {
-        alert('You can only transfer 50 NFTs in one transaction, please deselect your last checkbox or the transaction will fail');  
-    }
-    return selected;
-}
-
-function multipleBuyButton() {
-    selectedCB = getSelected();
-    let tx = {};
-    tx.contractName = "nftmarket";
-    tx.contractAction = "buy";
-    tx.contractPayload = {};
-    tx.contractPayload.symbol = currentTable;
-    tx.contractPayload.nfts = selectedCB;
-    tx.contractPayload.marketAccount = "oceanwallet";
-    message = "Buy NFT(s) with ID(s): " + selectedCB;
-                hive_keychain.requestCustomJson(currentUser, "ssc-mainnet-hive", "Active", JSON.stringify(tx), message, function(response) {
-	               if (response.success) {
-                       alert("Succesfully bought NFT(s)!");
-                       $("#searchField").val("");
-                    // check the current page to know what load function to call
-                       if(page == "market.html"){
-                           loadMarket();
-                       }
-                       else {
-                           loadMarket2();
-                       }
-                   }
-                    else {
-                        alert('Transaction failed, please try again!');
-                    }
-                }); 
-}
-
-function multipleCancelButton() {
-    selectedCB = getSelected();
-    let tx = {};
-    tx.contractName = "nftmarket";
-    tx.contractAction = "cancel";
-    tx.contractPayload = {};
-    tx.contractPayload.symbol = currentTable;
-    tx.contractPayload.nfts = selectedCB;
-    message = "Cancel buy order(s) for NFT(s) with ID(s): " + selectedCB;
-                hive_keychain.requestCustomJson(currentUser, "ssc-mainnet-hive", "Active", JSON.stringify(tx), message, function(response) {
-	               if (response.success) {
-                       alert("Succesfully cancelled sell order!");
-                       $("#searchField").val("");
-                    // check the current page to know what load function to call
-                       if(page == "market.html"){
-                           loadMarket();
-                       }
-                       else {
-                           loadMarket2();
-                       }
-                   }
-                    else {
-                        alert('Transaction failed, please try again!');
-                    }
-                });     
-}
-
-function boxesCheckedValid() {
-    buyable = true;
-    cancelable = true; 
-    
-    let selected = [];
-    let names = [];
-    
-    $("input:checkbox[name=sendCB]:checked").each(function(){
-        selected.push($(this).attr('id')); //
-    });
-    
-    for(let i = 0; i < selected.length; i++) {
-        selected[i] = selected[i].split('-')[1];
-        names.push(selected[i]);
-    }
-    
-    for (let i = 0; i < names.length; i++) {
-        if (currentUser == names[i]) {
-                buyable = false;       
-            }   
-        else if ( !(currentUser == names[i]) ) {
-            cancelable = false;        
-        } 
-    }
-    if (buyable == true) {
-            return "buy";
-        }
-    else if (cancelable == true) {
-            return "cancel";
-    }
-    else { 
-        return "null";
-    }             
-}
 
        
 

@@ -179,7 +179,7 @@ div.sticky {
   position: sticky;
   bottom: 0;
   padding-bottom: 10px;
-  width: 80%;
+  width: 40%;
   margin: auto;
 }
 
