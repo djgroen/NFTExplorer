@@ -61,7 +61,8 @@ function sortData(data) {
 					JSONdata[i].artSeries = data[i].grouping.artSeries;
 					break;
                 case "DCROPS":
-                    JSONdata[i].card =data[i].grouping.name;
+                    JSONdata[i].card = data[i].grouping.name;
+                    JSONdata[i].rarity = JSON.parse(data[i].grouping.nft).rarity
                     break;
             }
             JSONdata[i].price = parseFloat(data[i].price) 
@@ -132,6 +133,7 @@ function buildTableDirect(data) {
 					break;
                 case "DCROPS":
                     nfts[i].push(data[i].card);
+                    nfts[i].push(data[i].rarity);
                     break;
             }
         nfts[i].push(parseFloat(data[i].price) );
@@ -168,6 +170,7 @@ function buildTableDirect(data) {
             break;
         case "DCROPS":
             cols.push({title: "card"});
+            cols.push({title: "rarity"});
             break;
     }
     cols.push({title: "price"});
@@ -178,7 +181,7 @@ function buildTableDirect(data) {
 	switch(currentTable) {
 		case "STAR": searchPaneCols = [3,4,6]; break;
 		case "CITY": searchPaneCols = [1,3,5]; break;
-		case "DCROPS": searchPaneCols = [1,3,5]; break;
+		case "DCROPS": searchPaneCols = [1,3,4,6]; break;
 		case "NFTSR": searchPaneCols = [1,3,5]; break;
 	}
     
@@ -186,7 +189,7 @@ function buildTableDirect(data) {
     switch(currentTable) {
 		case "STAR": notOrderable.push(7); break;
 		case "CITY":  notOrderable.push(6); break;
-		case "DCROPS":  notOrderable.push(6); break;
+		case "DCROPS":  notOrderable.push(7); break;
 		case "NFTSR":  notOrderable.push(6); break;
 	}
     
@@ -201,6 +204,7 @@ function buildTableDirect(data) {
 		"pagingType": 'input',
 		"searchPanes": {
 			"cascadePanes": true,
+            "layout": 'columns-4',
             "columns": searchPaneCols
         },
 		"columnDefs": [
