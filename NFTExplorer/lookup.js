@@ -29,23 +29,30 @@ var getData = function(table, id) {
 } 
 
 async function findNFT() {
+    console.log("Works")
     var table = search_params.get('table');
     var id = search_params.get('id');
     await getData(table, id).then(function(result) { 
         nft = result;
+        $("#cardData").append("<p> Card ID: " + nft._id + "</p>");
+        $("#cardData").append("<p> Owner: " + nft.account + "</p>");
         switch(table) {
             case 'STAR':
-                $("#cardData").append("<p> Card ID: " + nft._id + "</p>");
-                $("#cardData").append("<p> Owner: " + nft.account + "</p>");
                 $("#cardData").append("<p> Class: " + nft.properties.class + "</p>");
                 $("#cardData").append("<p> Type: " + nft.properties.type + "</p>");
                 break;
-            case 'CITY': 
-                $("#cardData").append("<p> Card ID: " + nft._id + "</p>");
-                $("#cardData").append("<p> Owner: " + nft.account + "</p>");
+            case 'CITY':
                 $("#cardData").append("<p> Name: " + nft.properties.name + "</p>");
                 $("#cardData").append("<p> Type: " + nft.properties.type + "</p>");
-                break;            
+                break;
+            case 'DCROPS':
+                console.log(nft._id )
+                console.log(nft.account)
+                console.log(nft.properties.name)
+                $("#cardData").append("<p> Name: " + nft.properties.name + "</p>");
+                break;
+            default:
+                break;
                }
     });
     

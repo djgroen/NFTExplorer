@@ -51,9 +51,9 @@ function showData(data) {
         if (moment.utc().unix() - data[i].timestamp > 86400){
             continue
         }   
-        nftList = '<a ' + 'target="_blank"' + ' href="https://okean123.github.io/NFTExplorer/lookup.html?table=' + currentTable + '&id=' + nfts[0] + '">'+ nfts[0] +'</a>' 
+        nftList = '<a ' + 'target="_blank"' + ' href="./lookup.html?table=' + currentTable + '&id=' + nfts[0] + '">'+ nfts[0] +'</a>'
         for (let i = 1; i < nfts.length; i++) {
-            nftList += ', <a ' + 'target="_blank"' + ' href="https://okean123.github.io/NFTExplorer/lookup.html?table=' + currentTable + '&id=' + nfts[i] + '">'+ nfts[i] +'</a>' 
+            nftList += ', <a ' + 'target="_blank"' + ' href="./lookup.html?table=' + currentTable + '&id=' + nfts[i] + '">'+ nfts[i] +'</a>'
         }
 
         $(div).append($('<p>' + '<a ' + 'target="_blank"' + ' href="https://peakd.com/@' + buyer + '">'+buyer+'</a>' + ' bought NFT(s) with ID(s) ' 
