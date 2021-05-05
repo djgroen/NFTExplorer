@@ -46,18 +46,15 @@ async function findNFT() {
                 $("#cardData").append("<p> Type: " + nft.properties.type + "</p>");
                 break;
             case 'DCROPS':
-                console.log(nft._id )
-                console.log(nft.account)
-                console.log(nft.properties.name)
                 $("#cardData").append("<p> Name: " + nft.properties.name + "</p>");
+                $("#cardData").append("<p> NFT: " + nft.properties.nft + "</p>");
+                $("#cardData").append("<p> Primary: " + nft.properties.primary + "</p>");
+                $("#cardData").append("<p> Secondary: " + nft.properties.secondary + "</p>");
                 break;
             default:
                 break;
                }
     });
-    
-    
-    
 }
 
 
