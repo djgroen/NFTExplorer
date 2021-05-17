@@ -62,6 +62,19 @@ function sortData(data) {
 					break;
                 case "DCROPS":
                     JSONdata[i].card = data[i].grouping.name;
+                    primary = JSON.parse(data[i].grouping.primary)
+                    if (primary.type == 'SEED') {
+                        switch(primary.s[0]) {
+                            case 0: JSONdata[i].season = "Spring"; break;
+                            case 1: JSONdata[i].season = "Summer"; break;
+                            case 2: JSONdata[i].season = "Fall"; break;
+                            case 3: JSONdata[i].season = "Winter"; break;
+                            default: JSONdata[i].season = "None"; break;
+                        }
+                    }
+                    else {
+                        JSONdata[i].season = "Land"
+                    }
                     JSONdata[i].rarity = JSON.parse(data[i].grouping.nft).rarity
                     break;
             }
@@ -133,6 +146,7 @@ function buildTableDirect(data) {
 					break;
                 case "DCROPS":
                     nfts[i].push(data[i].card);
+                    nfts[i].push(data[i].season);
                     nfts[i].push(data[i].rarity);
                     break;
             }
@@ -170,6 +184,7 @@ function buildTableDirect(data) {
             break;
         case "DCROPS":
             cols.push({title: "card"});
+            cols.push({title: "season"});
             cols.push({title: "rarity"});
             break;
     }
@@ -181,7 +196,7 @@ function buildTableDirect(data) {
 	switch(currentTable) {
 		case "STAR": searchPaneCols = [3,4,6]; break;
 		case "CITY": searchPaneCols = [1,3,5]; break;
-		case "DCROPS": searchPaneCols = [1,3,4,6]; break;
+		case "DCROPS": searchPaneCols = [1,3,4,5,7]; break;
 		case "NFTSR": searchPaneCols = [1,3,5]; break;
 	}
     
@@ -189,7 +204,7 @@ function buildTableDirect(data) {
     switch(currentTable) {
 		case "STAR": notOrderable.push(7); break;
 		case "CITY":  notOrderable.push(6); break;
-		case "DCROPS":  notOrderable.push(7); break;
+		case "DCROPS":  notOrderable.push(8); break;
 		case "NFTSR":  notOrderable.push(6); break;
 	}
     
@@ -204,7 +219,7 @@ function buildTableDirect(data) {
 		"pagingType": 'input',
 		"searchPanes": {
 			"cascadePanes": true,
-            "layout": 'columns-4',
+            "layout": getPanesLayout(currentTable),
             "columns": searchPaneCols
         },
 		"columnDefs": [
@@ -215,6 +230,14 @@ function buildTableDirect(data) {
     table.on( 'draw', updateRemovedButtons);
     document.getElementById("loadButton").disabled = false;
 } // end build table
+
+// get the Pane layout switched by table
+function getPanesLayout(table) {
+    switch (table) {
+        case 'DCROPS': return 'columns-5'; break;
+        default: return 'columns-3'; break;
+    }
+}
 
 function addSelected(item, seller) {
     current = JSON.parse(localStorage["selected"]);
