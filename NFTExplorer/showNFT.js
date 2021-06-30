@@ -20,6 +20,10 @@ var getRawData = function(contract, table, offSet) {
 	currentTable = table;
     table = table + "instances";
     let account = document.getElementById("usernameInput").value;
+	// Prevent account from using
+	if (account == "tlundy47") {
+		return null;
+	}
     return new Promise(function(resolve, reject) {  
         ssc.find(contract, table, {account: account}, 1000, offSet, [], (err, result) => {          
             if (result) {
