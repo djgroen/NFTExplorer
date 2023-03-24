@@ -30,6 +30,30 @@ function broadcastSendTX() {
             if (input.indexOf('@') > -1 || input.length < 3 || input.length > 16 || /\s/.test(input) || input.indexOf('!') > -1 || input.indexOf('"') > -1 || input.indexOf(',') > -1) {
                 alert('Check the entered username!');
             }
+	    else if(input === "null") {
+                alert('Sending to null: burning');
+                var transaction = {};
+                transaction.contractName = "nft";
+                transaction.contractAction = "burn";
+                transaction.contractPayload = {};
+                transaction.contractPayload.nfts = [];
+                transaction.contractPayload.nfts[0] ={};
+                transaction.contractPayload.nfts[0].symbol = currentTable;
+                transaction.contractPayload.nfts[0].ids = [];
+                transaction.contractPayload.nfts[0].ids.push(document.querySelector("#broadcastTXButton").value);
+
+                message = "Burn " + currentTable + " NFT with ID " + document.querySelector("#broadcastTXButton").value;
+                hive_keychain.requestCustomJson(document.querySelector('#usernameInput').value, "ssc-mainnet-hive", "Active", JSON.stringify(transaction), message, function(response) {
+	               if (response.success) {
+                        console.log(response);
+                        document.querySelector('#sendToLabel').innerText = "Sent to:";
+                        document.querySelector('#succesIndicator').innerText = "Transaction successfully broadcasted!";
+                       }
+                    else {
+                        alert('Transaction failed, please try again!');
+                    }
+                });
+	    }
             else {
                 // building transaction step by step
                 var transaction = {};
